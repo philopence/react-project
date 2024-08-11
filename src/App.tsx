@@ -1,9 +1,26 @@
-import { Button } from "./components/ui/button";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
+import DashboardPage from "@/pages/DashboardPage";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate replace to="/dashboard" />,
+  },
+  {
+    path: "/",
+    children: [
+      {
+        path: "dashboard",
+        element: <DashboardPage />,
+      },
+    ],
+  },
+]);
 
 export default function App() {
-  return (
-    <>
-      <Button>App</Button>
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
