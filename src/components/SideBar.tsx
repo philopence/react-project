@@ -30,7 +30,7 @@ const navLinks = [
   },
   {
     label: "Settings",
-    to: "/Settings",
+    to: "/settings",
     icon: <Settings />,
   },
 ];
