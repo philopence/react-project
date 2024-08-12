@@ -3,12 +3,12 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import AppLayout from "@/layouts/AppLayout";
+import BookingsPage from "@/pages/BookingsPage";
+import CabinsPage from "@/pages/CabinsPage";
 import DashboardPage from "@/pages/DashboardPage";
-import AppLayout from "./layouts/AppLayout";
-import BookingsPage from "./pages/BookingsPage";
-import CabinsPage from "./pages/CabinsPage";
-import UsersPage from "./pages/UsersPage";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "@/pages/SettingsPage";
+import UsersPage from "@/pages/UsersPage";
 
 const router = createBrowserRouter([
   {
