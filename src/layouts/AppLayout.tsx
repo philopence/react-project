@@ -10,7 +10,6 @@ export default function AppLayout() {
       <div className="grid grid-rows-[auto_1fr]">
         <div>header</div>
         <div>
-          main
           <Outlet />
         </div>
       </div>
