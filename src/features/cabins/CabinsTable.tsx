@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
-import { getCabins } from "@/services/apiCabins";
+import { deleteCabinById, getCabins } from "@/services/apiCabins";
 
 type Cabin = {
   id: number;
@@ -51,7 +52,16 @@ export default function CabinsTable() {
 }
 
 function CabinsTableRow({ cabin }: { cabin: Cabin }) {
-  const { image, name, maxCapacity, price, discount } = cabin;
+  const { id, image, name, maxCapacity, price, discount } = cabin;
+
+  const queryClient = useQueryClient();
+  const { mutate: deleteCabinByIdMutate, isPending } = useMutation({
+    mutationFn: deleteCabinById,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cabins"] });
+    },
+  });
+
   return (
     <TableRow>
       <TableCell>
@@ -61,7 +71,11 @@ function CabinsTableRow({ cabin }: { cabin: Cabin }) {
       <TableCell>{maxCapacity}</TableCell>
       <TableCell>{formatCurrency(price)}</TableCell>
       <TableCell>{`-${discount}%`}</TableCell>
-      <TableCell>btn</TableCell>
+      <TableCell>
+        <Button disabled={isPending} onClick={() => deleteCabinByIdMutate(id)}>
+          DEL
+        </Button>
+      </TableCell>
     </TableRow>
   );
 }
