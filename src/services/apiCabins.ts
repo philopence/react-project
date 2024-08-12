@@ -1,26 +1,13 @@
-import supabase from "@/lib/supabase";
-
-/**
- * @description fetch all cabins
- * @returns Array<{id, name, image, price, discount, description, maxCapacity}>
- */
+import { faker } from "@faker-js/faker";
 
 export async function getCabins() {
-  const { data: cabins, error } = await supabase.from("cabins").select("*");
-
-  if (error !== null) throw new Error();
-
-  // TODO zod validation
-
-  const cabinsDTO = cabins.map((cabin) => ({
-    id: cabin.id,
-    name: cabin.name,
-    image: cabin.image,
-    price: cabin.price,
-    discount: cabin.discount,
-    description: cabin.description,
-    maxCapacity: cabin.max_capacity,
+  return Array.from({ length: 5 }).map((_, i) => ({
+    id: i + 1,
+    image: faker.image.url({ width: 300, height: 200 }),
+    name: faker.commerce.productName(),
+    price: faker.number.int({ min: 100, max: 1000 }),
+    discount: faker.number.int({ min: 1, max: 99 }),
+    description: faker.commerce.productDescription(),
+    maxCapacity: faker.number.int({ min: 1, max: 8 }),
   }));
-
-  return cabinsDTO;
 }
