@@ -1,5 +1,10 @@
 import supabase from "@/lib/supabase";
 
+/**
+ * @description fetch all cabins
+ * @returns Array<{id, name, image, price, discount, description, maxCapacity}>
+ */
+
 export async function getCabins() {
   const { data: cabins, error } = await supabase.from("cabins").select("*");
 
