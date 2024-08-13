@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency } from "@/lib/utils";
 import { deleteCabinById, getCabins } from "@/services/apiCabins";
 
@@ -53,12 +54,14 @@ export default function CabinsTable() {
 
 function CabinsTableRow({ cabin }: { cabin: Cabin }) {
   const { id, image, name, maxCapacity, price, discount } = cabin;
+  const { toast } = useToast();
 
   const queryClient = useQueryClient();
   const { mutate: deleteCabinByIdMutate, isPending } = useMutation({
     mutationFn: deleteCabinById,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
+      toast({ description: "hi" });
     },
   });
 
