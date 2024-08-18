@@ -102,7 +102,6 @@ export default function CreateCabinForm() {
               <FormControl>
                 <Input
                   type="file"
-                  required
                   {...fieldProps}
                   onChange={(event) =>
                     onChange(event.target.files && event.target.files[0])

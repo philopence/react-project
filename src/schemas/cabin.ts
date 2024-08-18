@@ -9,7 +9,12 @@ const cabinSchema = z.object({
 });
 
 export const cabinFormSchema = cabinSchema.extend({
-  image: z.instanceof(File).refine((data) => data.type.startsWith("image/")),
+  image: z
+    .union([
+      z.instanceof(File).refine((data) => data.type.startsWith("image/")),
+      z.string().url(),
+    ])
+    .optional(),
 });
 
 export const cabinApiSchema = cabinSchema.extend({

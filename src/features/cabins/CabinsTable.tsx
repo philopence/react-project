@@ -1,3 +1,4 @@
+import { Copy, FileSliders, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,7 @@ export default function CabinsTable() {
 
   return (
     <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption>A list of all cabins.</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Image</TableHead>
@@ -42,7 +43,7 @@ export default function CabinsTable() {
 }
 
 function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
-  const { _id, image, name, maxCapacity, price, discount } = cabin;
+  const { _id, image, name, maxCapacity, price, discount, description } = cabin;
 
   const { mutate: deleteCabinMutate, isPending } = useDeleteCabinMutation();
 
@@ -57,12 +58,17 @@ function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
       <TableCell>{`-${discount}%`}</TableCell>
       <TableCell>
         <Button asChild>
+        <Button size="icon" asChild>
           <Link to={{ pathname: `/cabins/edit/${_id}` }} state={cabin}>
-            Edit
+            <FileSliders size={16} />
           </Link>
         </Button>
-        <Button disabled={isPending} onClick={() => deleteCabinMutate(_id)}>
-          DEL
+        <Button
+          size="icon"
+          disabled={isPending}
+          onClick={() => deleteCabinMutate(_id)}
+        >
+          <Trash2 size={16} />
         </Button>
       </TableCell>
     </TableRow>
