@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
 import { CabinApi } from "@/schemas/cabin";
+import useCreateCabinMutation from "./useCreateCabinMutation";
 import { useDeleteCabinMutation } from "./useDeleteCabinMutation";
 import { useGetCabinsQuery } from "./useGetCabinsQuery";
 
@@ -47,6 +48,9 @@ function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
 
   const { mutate: deleteCabinMutate, isPending } = useDeleteCabinMutation();
 
+  const { mutate: createCabinMutate, isPending: isCreateCabinPending } =
+    useCreateCabinMutation();
+
   return (
     <TableRow>
       <TableCell>
@@ -57,7 +61,22 @@ function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
       <TableCell>{formatCurrency(price)}</TableCell>
       <TableCell>{`-${discount}%`}</TableCell>
       <TableCell>
-        <Button asChild>
+        <Button
+          size="icon"
+          disabled={isCreateCabinPending}
+          onClick={() => {
+            createCabinMutate({
+              name: `copy of ${name}`,
+              image,
+              maxCapacity,
+              price,
+              discount,
+              description,
+            });
+          }}
+        >
+          <Copy size={16} />
+        </Button>
         <Button size="icon" asChild>
           <Link to={{ pathname: `/cabins/edit/${_id}` }} state={cabin}>
             <FileSliders size={16} />
