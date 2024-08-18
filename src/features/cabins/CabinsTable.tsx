@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,24 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency } from "@/lib/utils";
-import { deleteCabinById, getCabins } from "@/services/apiCabins";
-
-type Cabin = {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  discount: number;
-  maxCapacity: number;
-};
+import { CabinApi } from "@/schemas/cabin";
+import { useDeleteCabinMutation } from "./useDeleteCabinMutation";
+import { useGetCabinsQuery } from "./useGetCabinsQuery";
 
 export default function CabinsTable() {
-  const { data: cabins, isLoading } = useQuery({
-    queryKey: ["cabins"],
-    queryFn: getCabins,
-  });
+  const { data: cabins, isLoading } = useGetCabinsQuery();
 
   if (isLoading) return null;
 
@@ -45,40 +34,34 @@ export default function CabinsTable() {
       </TableHeader>
       <TableBody>
         {cabins?.map((cabin) => (
-          <CabinsTableRow key={cabin.id} cabin={cabin} />
+          <CabinsTableRow key={cabin._id} cabin={cabin} />
         ))}
       </TableBody>
     </Table>
   );
 }
 
-function CabinsTableRow({ cabin }: { cabin: Cabin }) {
-  const { id, image, name, maxCapacity, price, discount } = cabin;
-  const { toast } = useToast();
+function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
+  const { _id, image, name, maxCapacity, price, discount } = cabin;
 
-  const queryClient = useQueryClient();
-  const { mutate: deleteCabinByIdMutate, isPending } = useMutation({
-    mutationFn: deleteCabinById,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      toast({ description: "cabin deleted successfully!" });
-    },
-    onError: () => {
-      toast({ variant: "destructive", description: "cabin failed to delete" });
-    },
-  });
+  const { mutate: deleteCabinMutate, isPending } = useDeleteCabinMutation();
 
   return (
     <TableRow>
       <TableCell>
-        <img className="w-32 aspect-video" src={image} alt={name} />
+        <img className="w-32 aspect-video" src={`/${image}`} alt={name} />
       </TableCell>
       <TableCell>{name}</TableCell>
       <TableCell>{maxCapacity}</TableCell>
       <TableCell>{formatCurrency(price)}</TableCell>
       <TableCell>{`-${discount}%`}</TableCell>
       <TableCell>
-        <Button disabled={isPending} onClick={() => deleteCabinByIdMutate(id)}>
+        <Button asChild>
+          <Link to={{ pathname: `/cabins/edit/${_id}` }} state={cabin}>
+            Edit
+          </Link>
+        </Button>
+        <Button disabled={isPending} onClick={() => deleteCabinMutate(_id)}>
           DEL
         </Button>
       </TableCell>
