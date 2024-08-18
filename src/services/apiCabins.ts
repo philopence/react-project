@@ -1,12 +1,13 @@
 import { cabinApiSchema, CabinForm } from "@/schemas/cabin";
 
 export async function createCabin(cabin: CabinForm) {
-  console.log(cabin);
   const { image, ...otherFields } = cabin;
   const formData = new FormData();
-  if (image) {
-    formData.append("image", image);
-  }
+
+  if (!image) throw new Error();
+
+  formData.append("image", image);
+
   formData.append("otherFields", JSON.stringify(otherFields));
 
   const res = await fetch("/api/cabins", {
@@ -50,9 +51,11 @@ export async function updateCabinById({
 }) {
   const { image, ...otherFields } = cabin;
   const formData = new FormData();
-  if (image) {
+
+  if (image instanceof File) {
     formData.append("image", image);
   }
+
   formData.append("otherFields", JSON.stringify(otherFields));
 
   const res = await fetch(`/api/cabins/${id}`, {
