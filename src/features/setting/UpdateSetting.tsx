@@ -1,6 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,9 +8,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { SettingApi, SettingForm, settingFormSchema } from "@/schemas/setting";
-import { updateSetting } from "@/services/apiSetting";
+import { SettingApi, SettingForm } from "@/schemas/setting";
+import useSettingForm from "./useSettingForm";
+import useUpdateSettingMutation from "./useUpdateSettingMutation";
 
 type Props = {
   setting: SettingApi;
@@ -21,26 +18,9 @@ type Props = {
 export default function UpdateSetting({ setting }: Props) {
   const { _id, ...otherSetting } = setting;
 
-  const form = useForm<SettingForm>({
-    resolver: zodResolver(settingFormSchema),
-    defaultValues: otherSetting,
-  });
+  const form = useSettingForm(otherSetting);
 
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-
-  const { mutate: updateSettingMutate, isPending } = useMutation({
-    mutationFn: updateSetting,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["setting"] });
-      toast({ description: "updated setting successfully!" });
-    },
-    onError: () =>
-      toast({
-        variant: "destructive",
-        description: "Failed to Update Setting",
-      }),
-  });
+  const { mutate: updateSettingMutate, isPending } = useUpdateSettingMutation();
 
   function onSubmit(values: SettingForm) {
     updateSettingMutate({ id: _id, setting: values });
