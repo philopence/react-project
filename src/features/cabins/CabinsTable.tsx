@@ -41,15 +41,48 @@ export default function CabinsTable() {
 
   if (isLoading || !cabins) return null;
 
-  const filter = searchParams.get("discount");
+  const discount = searchParams.get("discount");
 
   let filteredCabins = cabins;
 
-  if (filter === "only-discount")
+  if (discount === "only-discount")
     filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
 
-  if (filter === "no-discount")
+  if (discount === "no-discount")
     filteredCabins = cabins.filter((cabin) => cabin.discount === 0);
+
+  const sortBy = searchParams.get("sortBy");
+
+  if (sortBy?.startsWith("price")) {
+    const order = sortBy.split("-").pop();
+
+    filteredCabins.sort((prev, next) => {
+      return order === "desc"
+        ? next.price - prev.price
+        : prev.price - next.price;
+    });
+  }
+
+  if (sortBy?.startsWith("discount")) {
+    const order = sortBy.split("-").pop();
+
+    filteredCabins.sort((prev, next) => {
+      console.log(prev.discount, next.discount);
+      return order === "desc"
+        ? next.discount - prev.discount
+        : prev.discount - next.discount;
+    });
+  }
+
+  if (sortBy?.startsWith("maxCapacity")) {
+    const order = sortBy.split("-").pop();
+
+    filteredCabins.sort((prev, next) =>
+      order === "desc"
+        ? next.maxCapacity - prev.maxCapacity
+        : prev.maxCapacity - next.maxCapacity,
+    );
+  }
 
   return (
     <Table>
