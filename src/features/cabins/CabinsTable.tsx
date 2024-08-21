@@ -1,6 +1,26 @@
-import { Copy, FileSliders, Trash2 } from "lucide-react";
+import { Copy, EllipsisVertical, FileSliders, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -44,12 +64,7 @@ export default function CabinsTable() {
 }
 
 function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
-  const { _id, image, name, maxCapacity, price, discount, description } = cabin;
-
-  const { mutate: deleteCabinMutate, isPending } = useDeleteCabinMutation();
-
-  const { mutate: createCabinMutate, isPending: isCreateCabinPending } =
-    useCreateCabinMutation();
+  const { image, name, maxCapacity, price, discount } = cabin;
 
   return (
     <TableRow>
@@ -61,35 +76,76 @@ function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
       <TableCell>{formatCurrency(price)}</TableCell>
       <TableCell>{`-${discount}%`}</TableCell>
       <TableCell>
-        <Button
-          size="icon"
-          disabled={isCreateCabinPending}
-          onClick={() => {
-            createCabinMutate({
-              name: `copy of ${name}`,
-              image,
-              maxCapacity,
-              price,
-              discount,
-              description,
-            });
-          }}
-        >
-          <Copy size={16} />
-        </Button>
-        <Button size="icon" asChild>
-          <Link to={{ pathname: `/cabins/edit/${_id}` }} state={cabin}>
-            <FileSliders size={16} />
-          </Link>
-        </Button>
-        <Button
-          size="icon"
-          disabled={isPending}
-          onClick={() => deleteCabinMutate(_id)}
-        >
-          <Trash2 size={16} />
-        </Button>
+        <CabinActions cabin={cabin} />
       </TableCell>
     </TableRow>
+  );
+}
+
+function CabinActions({ cabin }: { cabin: CabinApi }) {
+  const { _id, image, name, maxCapacity, price, discount, description } = cabin;
+
+  const { mutate: createCabinMutate, isPending: isCreateCabinPending } =
+    useCreateCabinMutation();
+
+  const { mutate: deleteCabinMutate, isPending } = useDeleteCabinMutation();
+
+  return (
+    <>
+      <AlertDialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Cabin Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={isCreateCabinPending}
+              onClick={() => {
+                createCabinMutate({
+                  name: `copy of ${name}`,
+                  image,
+                  maxCapacity,
+                  price,
+                  discount,
+                  description,
+                });
+              }}
+            >
+              <Copy size={16} />
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={{ pathname: `/cabins/edit/${_id}` }} state={cabin}>
+                <FileSliders size={16} />
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <AlertDialogTrigger className="w-full">
+                <Trash2 size={16} /> test
+              </AlertDialogTrigger>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isPending}
+              onClick={() => deleteCabinMutate(_id)}
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

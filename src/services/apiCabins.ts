@@ -6,6 +6,7 @@ export async function createCabin(cabin: CabinForm) {
 
   if (!image) throw new Error();
 
+  // TODO image rename when duplicate
   formData.append("image", image);
 
   formData.append("otherFields", JSON.stringify(otherFields));
