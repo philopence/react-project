@@ -156,16 +156,28 @@ function CabinActions({ cabin }: { cabin: CabinApi }) {
                 });
               }}
             >
-              <Copy size={16} />
+              <div className="flex items-center gap-1">
+                <Copy size={16} />
+                <span>Duplicate</span>
+              </div>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to={{ pathname: `/cabins/edit/${_id}` }} state={cabin}>
+              <Link
+                className="flex items-center gap-1"
+                to={{ pathname: `/cabins/edit/${_id}` }}
+                state={cabin}
+              >
                 <FileSliders size={16} />
+                <span>Edit</span>
               </Link>
+              {/* </div> */}
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <AlertDialogTrigger className="w-full">
-                <Trash2 size={16} /> test
+                <div className="flex items-center gap-1">
+                  <Trash2 size={16} />
+                  <span>Delete</span>
+                </div>
               </AlertDialogTrigger>
             </DropdownMenuItem>
           </DropdownMenuContent>
