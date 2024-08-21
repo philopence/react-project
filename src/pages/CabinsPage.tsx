@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import CabinFilter from "@/features/cabins/CabinFilter";
 import CabinsTable from "@/features/cabins/CabinsTable";
 
 export default function CabinsPage() {
@@ -12,7 +13,9 @@ export default function CabinsPage() {
             <Link to={{ pathname: `/cabins/new` }}>Create a Cabin</Link>
           </Button>
         </div>
-        <div>filter component</div>
+        <div>
+          <CabinFilter />
+        </div>
       </header>
 
       <CabinsTable />

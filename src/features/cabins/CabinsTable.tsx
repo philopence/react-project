@@ -1,6 +1,5 @@
 import { Copy, EllipsisVertical, FileSliders, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -39,7 +37,19 @@ import { useGetCabinsQuery } from "./useGetCabinsQuery";
 export default function CabinsTable() {
   const { data: cabins, isLoading } = useGetCabinsQuery();
 
-  if (isLoading) return null;
+  const [searchParams] = useSearchParams();
+
+  if (isLoading || !cabins) return null;
+
+  const filter = searchParams.get("discount");
+
+  let filteredCabins = cabins;
+
+  if (filter === "only-discount")
+    filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
+
+  if (filter === "no-discount")
+    filteredCabins = cabins.filter((cabin) => cabin.discount === 0);
 
   return (
     <Table>
@@ -55,7 +65,7 @@ export default function CabinsTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {cabins?.map((cabin) => (
+        {filteredCabins.map((cabin) => (
           <CabinsTableRow key={cabin._id} cabin={cabin} />
         ))}
       </TableBody>
