@@ -1,21 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { createCabin } from "@/services/apiCabins";
+import { updateCabinById } from "@/services/apiCabin";
 
-export default function useCreateCabinMutation() {
+export default function useUpdateCabinMutation() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
   const mutation = useMutation({
-    mutationFn: createCabin,
+    mutationFn: updateCabinById,
     onSuccess: () => {
-      toast({ description: "Create cabin successfully!" });
+      toast({ description: "Update cabin successfully!" });
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
       navigate({ pathname: `/cabins` });
     },
-    onError: () =>
-      toast({ variant: "destructive", description: "Failed to create cabin" }),
+    onError: (err) =>
+      toast({ variant: "destructive", description: err.message }),
   });
 
   return mutation;

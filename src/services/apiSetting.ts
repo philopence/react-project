@@ -1,29 +1,44 @@
-import { settingApiSchema, SettingForm } from "@/schemas/setting";
+import { ApiError } from "@/lib/ApiError";
+import { SettingApi, settingApiSchema, SettingForm } from "@/schemas/setting";
 
-export async function getSetting() {
-  const res = await fetch("/api/setting", { method: "GET" });
+export async function getSetting(): Promise<SettingApi> {
+  try {
+    const res = await fetch("/api/v1/setting", { method: "GET" });
 
-  if (!res.ok) throw new Error(res.statusText);
+    if (!res.ok) throw new Error(res.statusText);
 
-  const setting = settingApiSchema.parseAsync(await res.json());
+    const data = settingApiSchema.parse(await res.json());
 
-  return setting;
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
-export async function updateSetting({
+export async function updateSettingById({
   id,
   setting,
 }: {
   id: string;
-  setting: SettingForm;
-}) {
-  const res = await fetch(`/api/setting/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(setting),
-  });
+  setting: Partial<SettingForm>;
+}): Promise<SettingApi> {
+  try {
+    const res = await fetch(`/api/setting/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(setting),
+    });
 
-  if (!res.ok) throw new Error(res.statusText);
+    if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
+
+    const data = settingApiSchema.parse(await res.json());
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }

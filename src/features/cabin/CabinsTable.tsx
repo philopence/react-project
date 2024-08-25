@@ -112,7 +112,7 @@ function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
   return (
     <TableRow>
       <TableCell>
-        <img className="w-32 aspect-video" src={`/${image}`} alt={name} />
+        <img className="w-32 aspect-video" src={image} alt={name} />
       </TableCell>
       <TableCell>{name}</TableCell>
       <TableCell>{maxCapacity}</TableCell>

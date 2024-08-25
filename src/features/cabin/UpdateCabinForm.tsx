@@ -9,17 +9,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CabinForm } from "@/schemas/cabin";
+import { CabinApi, CabinForm } from "@/schemas/cabin";
 import useCabinForm from "./useCabinForm";
-import useCreateCabinMutation from "./useCreateCabinMutation";
+import useUpdateCabinMutation from "./useUpdateCabinMutation";
 
-export default function CreateCabinForm() {
-  const form = useCabinForm();
+type Props = {
+  cabin: CabinApi;
+};
 
-  const { mutate: createCabinMutate, isPending } = useCreateCabinMutation();
+export default function UpdateCabinForm({ cabin }: Props) {
+  const form = useCabinForm(cabin);
+
+  const { mutate: updateCabinMutate, isPending } = useUpdateCabinMutation();
 
   function onSubmit(values: CabinForm) {
-    createCabinMutate(values);
+    updateCabinMutate({ id: cabin._id, cabin: values });
   }
 
   return (
@@ -94,11 +98,11 @@ export default function CreateCabinForm() {
         <FormField
           control={form.control}
           name="image"
-          // NOTE don't use value field
+          // NOTE don't need value field
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           render={({ field: { value: _, onChange, ...fieldProps } }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Cabin Image</FormLabel>
               <FormControl>
                 <Input
                   type="file"

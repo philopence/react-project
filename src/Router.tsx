@@ -10,7 +10,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import SettingsPage from "@/pages/SettingsPage";
 import UsersPage from "@/pages/UsersPage";
 import CreateCabinPage from "./pages/CreateCabinPage";
-import EditCabinPage from "./pages/EditCabinPage";
+import UpdateCabinPage from "./pages/UpdateCabinPage";
 
 const router = createBrowserRouter([
   {
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
           },
           {
             path: "edit/:id",
-            element: <EditCabinPage />,
+            element: <UpdateCabinPage />,
           },
         ],
       },
