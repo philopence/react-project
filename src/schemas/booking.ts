@@ -11,8 +11,13 @@ export const bookingSchema = z.object({
   note: z.string(),
   hasBreakfast: z.boolean(),
   isPaid: z.boolean(),
-  guest: z.string(),
-  cabin: z.string(),
+  guest: z.object({
+    name: z.string(),
+    email: z.string().email(),
+  }),
+  cabin: z.object({
+    name: z.string(),
+  }),
 });
 
 export type Booking = z.infer<typeof bookingSchema>;
