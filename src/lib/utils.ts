@@ -11,3 +11,11 @@ export function formatCurrency(num: number): string {
     currency: "USD",
   }).format(num);
 }
+
+export function formatDateTime(date: string): string {
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    // timeZone: "Asia/Shanghai",
+  }).format(new Date(date));
+}
