@@ -3,7 +3,7 @@ import Filter from "@/components/Filter";
 const filters = [
   {
     label: "All",
-    value: "all",
+    value: "",
   },
   {
     label: "Unconfirmed",
@@ -20,5 +20,5 @@ const filters = [
 ];
 
 export default function BookingFilter() {
-  return <Filter field="status" filters={filters} />;
+  return <Filter field="status[eq]" filters={filters} />;
 }

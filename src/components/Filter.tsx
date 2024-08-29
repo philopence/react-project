@@ -11,8 +11,14 @@ type Props = {
 export default function Filter({ field, filters }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  function handleFilter(search: string) {
-    searchParams.set(field, search);
+  const fieldValue = searchParams.get(field) || "";
+
+  function handleFilter(filter: string) {
+    if (filter === "") {
+      searchParams.delete(field);
+    } else {
+      searchParams.set(field, filter);
+    }
     setSearchParams(searchParams);
   }
   return (
@@ -20,9 +26,7 @@ export default function Filter({ field, filters }: Props) {
       {filters.map((f) => (
         <li key={f.value}>
           <Button
-            variant={
-              searchParams.get(field) === f.value ? "default" : "outline"
-            }
+            variant={fieldValue === f.value ? "default" : "outline"}
             onClick={() => handleFilter(f.value)}
           >
             {f.label}
