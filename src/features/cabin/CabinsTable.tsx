@@ -67,7 +67,6 @@ export default function CabinsTable() {
     const order = sortBy.split("-").pop();
 
     filteredCabins.sort((prev, next) => {
-      console.log(prev.discount, next.discount);
       return order === "desc"
         ? next.discount - prev.discount
         : prev.discount - next.discount;

@@ -7,7 +7,7 @@ const sortBy = [
   },
   {
     label: "Date (asce)",
-    value: "Date-asce",
+    value: "date-asce",
   },
   // {
   //   label: "Discount (desc)",

@@ -1,6 +1,7 @@
 import "date-fns";
 import { formatDistance } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -16,9 +17,28 @@ import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Booking } from "@/schemas/booking";
 
 export default function BookingsTable() {
+  const [searchParams] = useSearchParams();
   const { data: bookings, isLoading } = useGetBookingsQuery();
 
   if (isLoading) return null;
+
+  if (bookings === undefined) return null;
+
+  const sortedBookings = bookings;
+
+  const sortBy = searchParams.get("sortBy");
+  if (sortBy) {
+    if (sortBy.startsWith("date")) {
+      const order = sortBy.split("-").pop();
+      sortedBookings.sort((prev, next) => {
+        return order === "desc"
+          ? new Date(next.startDate).getTime() -
+              new Date(prev.startDate).getTime()
+          : new Date(prev.startDate).getTime() -
+              new Date(next.startDate).getTime();
+      });
+    }
+  }
 
   return (
     <Table>
@@ -34,13 +54,9 @@ export default function BookingsTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {bookings ? (
-          bookings.map((booking) => (
-            <BookingRow key={booking._id} booking={booking} />
-          ))
-        ) : (
-          <div>no booking</div>
-        )}
+        {sortedBookings.map((booking) => (
+          <BookingRow key={booking._id} booking={booking} />
+        ))}
       </TableBody>
     </Table>
   );
