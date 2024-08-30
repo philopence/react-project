@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import SideBar from "@/components/SideBar";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AppLayout() {
   return (
@@ -8,7 +9,9 @@ export default function AppLayout() {
         <SideBar />
       </div>
       <div className="grid grid-rows-[auto_1fr]">
-        <div>header</div>
+        <div>
+          header <ThemeToggle />
+        </div>
         <div>
           <Outlet />
         </div>
