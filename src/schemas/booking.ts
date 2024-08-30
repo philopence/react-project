@@ -21,3 +21,12 @@ export const bookingSchema = z.object({
 });
 
 export type Booking = z.infer<typeof bookingSchema>;
+
+export const bookingsSchema = z.object({
+  bookings: z.array(bookingSchema),
+  totalBooking: z.number().int(),
+  page: z.number().int().optional(),
+  totalPage: z.number().int().optional(),
+});
+
+export type Bookings = z.infer<typeof bookingsSchema>;
