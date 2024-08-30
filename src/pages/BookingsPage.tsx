@@ -4,9 +4,9 @@ import BookingsTable from "@/features/booking/BookingsTable";
 
 export default function BookingsPage() {
   return (
-    <div>
-      <header>
-        <div>Booking Page Header</div>
+    <section>
+      <header className="flex items-center justify-between">
+        <div>Bookings Page Header</div>
 
         <div className="flex items-center gap-2">
           <div>
@@ -18,9 +18,10 @@ export default function BookingsPage() {
           </div>
         </div>
       </header>
+
       <main>
         <BookingsTable />
       </main>
-    </div>
+    </section>
   );
 }
