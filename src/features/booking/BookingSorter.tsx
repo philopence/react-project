@@ -9,22 +9,6 @@ const sortBy = [
     label: "Date (asce)",
     value: "date-asce",
   },
-  // {
-  //   label: "Discount (desc)",
-  //   value: "discount-desc",
-  // },
-  // {
-  //   label: "Discont (asce)",
-  //   value: "discount-asce",
-  // },
-  // {
-  //   label: "Max Capacity (desc)",
-  //   value: "maxCapacity-desc",
-  // },
-  // {
-  //   label: "Max Capacity (asce)",
-  //   value: "maxCapacity-asce",
-  // },
 ];
 
 const field = "sortBy";
