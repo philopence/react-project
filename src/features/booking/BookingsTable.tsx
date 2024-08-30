@@ -1,9 +1,17 @@
+import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import "date-fns";
 import { formatDistance } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Pagination from "@/components/Pagination";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -121,7 +129,20 @@ function BookingRow({ booking }: { booking: Booking }) {
       </TableCell>
       <TableCell>
         {/* TODO the dropdownmenu of actions */}
-        <EllipsisVertical />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Booking Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link to={{ pathname: `/bookings/${booking._id}` }}>
+                Booking Detail
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   );
