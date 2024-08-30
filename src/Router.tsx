@@ -9,6 +9,7 @@ import CabinsPage from "@/pages/CabinsPage";
 import DashboardPage from "@/pages/DashboardPage";
 import SettingsPage from "@/pages/SettingsPage";
 import UsersPage from "@/pages/UsersPage";
+import BookingPage from "./pages/BookingPage";
 import CreateCabinPage from "./pages/CreateCabinPage";
 import UpdateCabinPage from "./pages/UpdateCabinPage";
 
@@ -27,7 +28,16 @@ const router = createBrowserRouter([
       },
       {
         path: "bookings",
-        element: <BookingsPage />,
+        children: [
+          {
+            index: true,
+            element: <BookingsPage />,
+          },
+          {
+            path: ":id",
+            element: <BookingPage />,
+          },
+        ],
       },
       {
         path: "cabins",
