@@ -14,6 +14,8 @@ export const bookingSchema = z.object({
   guest: z.object({
     name: z.string(),
     email: z.string().email(),
+    nationality: z.string(),
+    nationalId: z.string(),
   }),
   cabin: z.object({
     name: z.string(),
