@@ -1,12 +1,25 @@
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import "date-fns";
 import { formatDistance } from "date-fns";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Trash2 } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import Pagination from "@/components/Pagination";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import {
+  AlertDialogHeader,
+  AlertDialogFooter
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import {
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -26,6 +39,7 @@ import { useToast } from "@/components/ui/use-toast";
 import useGetBookingsQuery from "@/features/booking/useGetBookingsQuery";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Booking } from "@/schemas/booking";
+import useDeleteBookingByIdMutation from "./useDeleteBookingByIdMutation";
 import useUpdateBookingByIdMutation from "./useUpdateBookingByIdMutation";
 
 export default function BookingsTable() {
@@ -94,6 +108,9 @@ const STATUS_STYLES = {
 function BookingRow({ booking }: { booking: Booking }) {
   const { isPending, mutate: checkOutMutate } = useUpdateBookingByIdMutation();
 
+  const { isPending: isDeleteBookingPending, mutate: deleteBookingMutate } =
+    useDeleteBookingByIdMutation();
+
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
@@ -116,6 +133,10 @@ function BookingRow({ booking }: { booking: Booking }) {
         }
       }
     );
+  }
+
+  function handleDeleteBooking() {
+    deleteBookingMutate(booking._id);
   }
 
   return (
@@ -157,33 +178,61 @@ function BookingRow({ booking }: { booking: Booking }) {
         {formatCurrency(booking.cabinPrice + booking.extraPrice)}
       </TableCell>
       <TableCell>
-        {/* TODO the dropdownmenu of actions */}
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVertical />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Booking Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to={{ pathname: `/bookings/${booking._id}` }}>
-                Booking Detail
-              </Link>
-            </DropdownMenuItem>
-            {booking.status === "unconfirmed" && (
-              <DropdownMenuItem asChild>
-                <Link to={{ pathname: `/bookings/${booking._id}/check-in` }}>
-                  Check In
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Booking Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link to={{ pathname: `/bookings/${booking._id}` }}>
+                  Booking Detail
                 </Link>
               </DropdownMenuItem>
-            )}
-            {booking.status === "check-in" && (
-              <DropdownMenuItem disabled={isPending} onClick={handleCheckOut}>
-                Check out
+              {booking.status === "unconfirmed" && (
+                <DropdownMenuItem asChild>
+                  <Link to={{ pathname: `/bookings/${booking._id}/check-in` }}>
+                    Check In
+                  </Link>
+                </DropdownMenuItem>
+              )}
+              {booking.status === "check-in" && (
+                <DropdownMenuItem disabled={isPending} onClick={handleCheckOut}>
+                  Check out
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem asChild>
+                <AlertDialogTrigger className="w-full">
+                  <div className="flex items-center gap-1">
+                    <Trash2 size={16} />
+                    <span>Delete booking</span>
+                  </div>
+                </AlertDialogTrigger>
               </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your
+                account and remove your data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={isDeleteBookingPending}
+                onClick={handleDeleteBooking}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </TableCell>
     </TableRow>
   );

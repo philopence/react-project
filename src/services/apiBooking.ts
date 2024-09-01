@@ -3,7 +3,7 @@ import {
   Booking,
   Bookings,
   bookingSchema,
-  bookingsSchema,
+  bookingsSchema
 } from "@/schemas/booking";
 import { resErrorSchema } from "@/schemas/error";
 
@@ -13,7 +13,7 @@ export async function getBookings(query?: string): Promise<Bookings> {
     const queryString = query ? `?${query}` : "";
 
     const res = await fetch(`/api/v1/bookings/${queryString}`, {
-      method: "GET",
+      method: "GET"
     });
 
     if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
@@ -37,7 +37,7 @@ export async function getBookings(query?: string): Promise<Bookings> {
 export async function getBookingById(id: string) {
   try {
     const res = await fetch(`/api/v1/bookings/${id}`, {
-      method: "GET",
+      method: "GET"
     });
 
     if (!res.ok) {
@@ -55,9 +55,28 @@ export async function getBookingById(id: string) {
   }
 }
 
+export async function deleteBookingById(id: string) {
+  try {
+    const res = await fetch(`/api/v1/bookings/${id}`, {
+      method: "DELETE"
+    });
+
+    if (!res.ok) {
+      const data = resErrorSchema.parse(await res.json());
+
+      throw new Error(data.message);
+    }
+
+    return null;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 export async function updateBookingById({
   id,
-  booking,
+  booking
 }: {
   id: string;
   booking: Partial<Booking>;
@@ -66,9 +85,9 @@ export async function updateBookingById({
     const res = await fetch(`/api/v1/bookings/${id}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(booking),
+      body: JSON.stringify(booking)
     });
 
     if (!res.ok) {
@@ -96,11 +115,11 @@ export async function updateBookingById({
         name: "John Doe",
         email: "johndoe@example.com",
         nationality: "American",
-        nationalId: "123456789",
+        nationalId: "123456789"
       },
       cabin: {
-        name: "Maple Lodge",
-      },
+        name: "Maple Lodge"
+      }
     };
 
     return exampleBooking;
