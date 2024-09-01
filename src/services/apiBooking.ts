@@ -49,3 +49,38 @@ export async function getBookingById(id: string) {
     throw err;
   }
 }
+
+export async function updateBookingById({
+  id,
+  booking,
+}: {
+  id: string;
+  booking: Partial<{
+    isPaid: boolean;
+    status: "unconfirmed" | "check-in" | "check-out";
+  }>;
+}) {
+  try {
+    const res = await fetch(`/api/v1/bookings/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    });
+
+    if (!res.ok) {
+      const data = resErrorSchema.parse(await res.json());
+
+      throw new Error(data.message);
+    }
+
+    // const data = bookingSchema.parse(await res.json());
+
+    // return data;
+    return null;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
