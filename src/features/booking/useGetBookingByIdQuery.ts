@@ -3,7 +3,7 @@ import { getBookingById } from "@/services/apiBooking";
 
 export default function useGetBookingByIdQuery(id: string) {
   const query = useQuery({
-    queryKey: ["booking", id],
+    queryKey: ["bookings", id],
     queryFn: () => getBookingById(id),
   });
 
