@@ -1,5 +1,10 @@
 import { ApiError } from "@/lib/ApiError";
-import { Bookings, bookingSchema, bookingsSchema } from "@/schemas/booking";
+import {
+  Booking,
+  Bookings,
+  bookingSchema,
+  bookingsSchema,
+} from "@/schemas/booking";
 import { resErrorSchema } from "@/schemas/error";
 
 // ?field[gt]=5&page=2&limit=3
@@ -55,10 +60,7 @@ export async function updateBookingById({
   booking,
 }: {
   id: string;
-  booking: Partial<{
-    isPaid: boolean;
-    status: "unconfirmed" | "check-in" | "check-out";
-  }>;
+  booking: Partial<Booking>;
 }) {
   try {
     const res = await fetch(`/api/v1/bookings/${id}`, {
@@ -78,7 +80,30 @@ export async function updateBookingById({
     // const data = bookingSchema.parse(await res.json());
 
     // return data;
-    return null;
+    //
+    const exampleBooking = {
+      _id: "64f8283f0a5b0001",
+      startDate: "2024-09-01T14:30:00+00:00",
+      endDate: "2024-09-05T11:00:00+00:00",
+      guestNum: 2,
+      cabinPrice: 150.0,
+      extraPrice: 50.0,
+      status: "unconfirmed",
+      note: "Allergic to peanuts.",
+      hasBreakfast: true,
+      isPaid: false,
+      guest: {
+        name: "John Doe",
+        email: "johndoe@example.com",
+        nationality: "American",
+        nationalId: "123456789",
+      },
+      cabin: {
+        name: "Maple Lodge",
+      },
+    };
+
+    return exampleBooking;
   } catch (err) {
     console.error(err);
     throw err;
