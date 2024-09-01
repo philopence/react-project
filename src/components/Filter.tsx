@@ -18,6 +18,8 @@ export default function Filter({ field, filters }: Props) {
       searchParams.delete(field);
     } else {
       searchParams.set(field, filter);
+      // reset page
+      searchParams.delete("page");
     }
     setSearchParams(searchParams);
   }
