@@ -5,6 +5,7 @@ const settingSchema = z.object({
   maxNights: z.coerce.number().int(),
   minGuests: z.coerce.number().int(),
   maxGuests: z.coerce.number().int(),
+  breakfastPrice: z.number(),
 });
 
 export const settingApiSchema = settingSchema.extend({
