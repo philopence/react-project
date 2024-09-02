@@ -1,7 +1,7 @@
 import {
   createBrowserRouter,
   Navigate,
-  RouterProvider,
+  RouterProvider
 } from "react-router-dom";
 import AppLayout from "@/layouts/AppLayout";
 import BookingsPage from "@/pages/BookingsPage";
@@ -21,56 +21,56 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate replace to="/dashboard" />,
+        element: <Navigate replace to="/dashboard" />
       },
       {
         path: "dashboard",
-        element: <DashboardPage />,
+        element: <DashboardPage />
       },
       {
         path: "bookings",
         children: [
           {
             index: true,
-            element: <BookingsPage />,
+            element: <BookingsPage />
           },
           {
             path: ":id",
-            element: <BookingPage />,
+            element: <BookingPage />
           },
           {
             path: ":id/check-in",
-            element: <CheckInPage />,
-          },
-        ],
+            element: <CheckInPage />
+          }
+        ]
       },
       {
         path: "cabins",
         children: [
           {
             index: true,
-            element: <CabinsPage />,
+            element: <CabinsPage />
           },
           {
             path: "new",
-            element: <CreateCabinPage />,
+            element: <CreateCabinPage />
           },
           {
             path: "edit/:id",
-            element: <UpdateCabinPage />,
-          },
-        ],
+            element: <UpdateCabinPage />
+          }
+        ]
       },
       {
         path: "users",
-        element: <UsersPage />,
+        element: <UsersPage />
       },
       {
         path: "settings",
-        element: <SettingsPage />,
-      },
-    ],
-  },
+        element: <SettingsPage />
+      }
+    ]
+  }
 ]);
 
 export default function Router() {

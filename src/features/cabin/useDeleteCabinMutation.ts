@@ -14,7 +14,7 @@ export function useDeleteCabinMutation() {
     },
     onError: (err) => {
       toast({ variant: "destructive", description: err.message });
-    },
+    }
   });
 
   return mutation;

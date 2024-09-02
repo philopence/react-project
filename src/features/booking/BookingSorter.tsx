@@ -3,12 +3,12 @@ import SortBy from "@/components/SortBy";
 const sortBy = [
   {
     label: "Date (desc)",
-    value: "date-desc",
+    value: "date-desc"
   },
   {
     label: "Date (asce)",
-    value: "date-asce",
-  },
+    value: "date-asce"
+  }
 ];
 
 const field = "sortBy";

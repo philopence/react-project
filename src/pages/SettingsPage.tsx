@@ -5,7 +5,7 @@ import { getSetting } from "@/services/apiSetting";
 export default function SettingsPage() {
   const { data: setting, isLoading } = useQuery({
     queryKey: ["setting"],
-    queryFn: getSetting,
+    queryFn: getSetting
   });
 
   if (isLoading) return null;

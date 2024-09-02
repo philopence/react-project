@@ -15,11 +15,11 @@ export const bookingSchema = z.object({
     name: z.string(),
     email: z.string().email(),
     nationality: z.string(),
-    nationalId: z.string(),
+    nationalId: z.string()
   }),
   cabin: z.object({
-    name: z.string(),
-  }),
+    name: z.string()
+  })
 });
 
 export type Booking = z.infer<typeof bookingSchema>;
@@ -28,7 +28,7 @@ export const bookingsSchema = z.object({
   bookings: z.array(bookingSchema),
   totalBooking: z.number().int(),
   page: z.number().int().optional(),
-  totalPage: z.number().int().optional(),
+  totalPage: z.number().int().optional()
 });
 
 export type Bookings = z.infer<typeof bookingsSchema>;

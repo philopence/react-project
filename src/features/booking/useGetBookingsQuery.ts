@@ -14,7 +14,7 @@ export default function useGetBookingsQuery() {
 
   const query = useQuery({
     queryKey: ["bookings", searchParams.toString()],
-    queryFn: () => getBookings(searchParams.toString()),
+    queryFn: () => getBookings(searchParams.toString())
   });
 
   if (curPage > 1) {
@@ -22,7 +22,7 @@ export default function useGetBookingsQuery() {
     prevSearchParams.set("page", String(curPage - 1));
     queryClient.prefetchQuery({
       queryKey: ["bookings", prevSearchParams.toString()],
-      queryFn: () => getBookings(prevSearchParams.toString()),
+      queryFn: () => getBookings(prevSearchParams.toString())
     });
   }
 
@@ -31,7 +31,7 @@ export default function useGetBookingsQuery() {
     nextSearchParams.set("page", String(curPage + 1));
     queryClient.prefetchQuery({
       queryKey: ["bookings", nextSearchParams.toString()],
-      queryFn: () => getBookings(nextSearchParams.toString()),
+      queryFn: () => getBookings(nextSearchParams.toString())
     });
   }
 

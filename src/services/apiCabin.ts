@@ -4,7 +4,7 @@ import { CabinApi, cabinApiSchema, CabinForm } from "@/schemas/cabin";
 export async function getCabins(): Promise<CabinApi[]> {
   try {
     const res = await fetch("/api/v1/cabins", {
-      method: "GET",
+      method: "GET"
     });
 
     if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
@@ -28,7 +28,7 @@ export async function createCabin(cabin: CabinForm): Promise<CabinApi> {
       uploadFormData.append("image", cabin.image);
       const res = await fetch("/api/v1/upload", {
         method: "POST",
-        body: uploadFormData,
+        body: uploadFormData
       });
 
       if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
@@ -39,9 +39,9 @@ export async function createCabin(cabin: CabinForm): Promise<CabinApi> {
     const res = await fetch("/api/v1/cabins", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(cabin),
+      body: JSON.stringify(cabin)
     });
 
     if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
@@ -57,7 +57,7 @@ export async function createCabin(cabin: CabinForm): Promise<CabinApi> {
 
 export async function updateCabinById({
   id,
-  cabin,
+  cabin
 }: {
   id: string;
   cabin: Partial<CabinForm>;
@@ -68,7 +68,7 @@ export async function updateCabinById({
       formData.append("image", cabin.image);
       const res = await fetch("/api/v1/upload", {
         method: "POST",
-        body: formData,
+        body: formData
       });
       if (!res.ok) throw new Error(res.statusText);
       cabin.image = (await res.json()).url;
@@ -77,9 +77,9 @@ export async function updateCabinById({
     const res = await fetch(`/api/cabins/${id}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(cabin),
+      body: JSON.stringify(cabin)
     });
 
     if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
@@ -96,7 +96,7 @@ export async function updateCabinById({
 export async function getCabinById(id: string): Promise<CabinApi> {
   try {
     const res = await fetch(`/api/cabins/${id}`, {
-      method: "GET",
+      method: "GET"
     });
 
     if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
@@ -113,7 +113,7 @@ export async function getCabinById(id: string): Promise<CabinApi> {
 export async function deleteCabinById(id: string): Promise<void> {
   try {
     const res = await fetch(`/api/cabins/${id}`, {
-      method: "DELETE",
+      method: "DELETE"
     });
 
     if (!res.ok) throw new ApiError(res.status, (await res.json()).message);

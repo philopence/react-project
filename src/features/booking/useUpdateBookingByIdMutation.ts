@@ -3,7 +3,7 @@ import { updateBookingById } from "@/services/apiBooking";
 
 export default function useUpdateBookingByIdMutation() {
   const mutation = useMutation({
-    mutationFn: updateBookingById,
+    mutationFn: updateBookingById
   });
 
   return mutation;

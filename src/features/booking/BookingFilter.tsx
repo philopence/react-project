@@ -3,20 +3,20 @@ import Filter from "@/components/Filter";
 const filters = [
   {
     label: "All",
-    value: "",
+    value: ""
   },
   {
     label: "Unconfirmed",
-    value: "unconfirmed",
+    value: "unconfirmed"
   },
   {
     label: "Check in",
-    value: "check-in",
+    value: "check-in"
   },
   {
     label: "Check out",
-    value: "check-out",
-  },
+    value: "check-out"
+  }
 ];
 
 export default function BookingFilter() {

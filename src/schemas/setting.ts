@@ -5,11 +5,11 @@ const settingSchema = z.object({
   maxNights: z.coerce.number().int(),
   minGuests: z.coerce.number().int(),
   maxGuests: z.coerce.number().int(),
-  breakfastPrice: z.number(),
+  breakfastPrice: z.number()
 });
 
 export const settingApiSchema = settingSchema.extend({
-  _id: z.string(),
+  _id: z.string()
 });
 
 export const settingFormSchema = settingSchema.partial();

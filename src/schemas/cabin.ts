@@ -5,21 +5,21 @@ const cabinSchema = z.object({
   description: z.string(),
   maxCapacity: z.coerce.number(),
   price: z.coerce.number(),
-  discount: z.coerce.number(),
+  discount: z.coerce.number()
 });
 
 export const cabinFormSchema = cabinSchema.extend({
   image: z
     .union([
       z.instanceof(File).refine((data) => data.type.startsWith("image/")),
-      z.string().url(),
+      z.string().url()
     ])
-    .optional(),
+    .optional()
 });
 
 export const cabinApiSchema = cabinSchema.extend({
   _id: z.string(),
-  image: z.string(),
+  image: z.string()
 });
 
 export type CabinForm = z.infer<typeof cabinFormSchema>;

@@ -18,7 +18,7 @@ export async function getSetting(): Promise<SettingApi> {
 
 export async function updateSettingById({
   id,
-  setting,
+  setting
 }: {
   id: string;
   setting: Partial<SettingForm>;
@@ -27,9 +27,9 @@ export async function updateSettingById({
     const res = await fetch(`/api/setting/${id}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(setting),
+      body: JSON.stringify(setting)
     });
 
     if (!res.ok) throw new ApiError(res.status, (await res.json()).message);

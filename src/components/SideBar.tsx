@@ -3,7 +3,7 @@ import {
   LayoutDashboard,
   ScrollText,
   Settings,
-  Users,
+  Users
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -11,28 +11,28 @@ const navLinks = [
   {
     label: "Dashboard",
     to: "/dashboard",
-    icon: <LayoutDashboard />,
+    icon: <LayoutDashboard />
   },
   {
     label: "Bookings",
     to: "/bookings",
-    icon: <ScrollText />,
+    icon: <ScrollText />
   },
   {
     label: "Cabins",
     to: "/cabins",
-    icon: <House />,
+    icon: <House />
   },
   {
     label: "Users",
     to: "/users",
-    icon: <Users />,
+    icon: <Users />
   },
   {
     label: "Settings",
     to: "/settings",
-    icon: <Settings />,
-  },
+    icon: <Settings />
+  }
 ];
 
 export default function SideBar() {

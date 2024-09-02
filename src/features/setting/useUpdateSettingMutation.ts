@@ -14,8 +14,8 @@ export default function useUpdateSettingMutation() {
     onError: () =>
       toast({
         variant: "destructive",
-        description: "Failed to Update Setting",
-      }),
+        description: "Failed to Update Setting"
+      })
   });
 
   return mutation;

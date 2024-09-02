@@ -9,7 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
@@ -17,7 +17,7 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuItem,
+  DropdownMenuItem
 } from "@/components/ui/dropdown-menu";
 import {
   Table,
@@ -26,7 +26,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
 import { CabinApi } from "@/schemas/cabin";
@@ -79,7 +79,7 @@ export default function CabinsTable() {
     filteredCabins.sort((prev, next) =>
       order === "desc"
         ? next.maxCapacity - prev.maxCapacity
-        : prev.maxCapacity - next.maxCapacity,
+        : prev.maxCapacity - next.maxCapacity
     );
   }
 
@@ -151,7 +151,7 @@ function CabinActions({ cabin }: { cabin: CabinApi }) {
                   maxCapacity,
                   price,
                   discount,
-                  description,
+                  description
                 });
               }}
             >

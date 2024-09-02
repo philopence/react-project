@@ -16,7 +16,7 @@ export default function useUpdateCabinMutation() {
       navigate({ pathname: `/cabins` });
     },
     onError: (err) =>
-      toast({ variant: "destructive", description: err.message }),
+      toast({ variant: "destructive", description: err.message })
   });
 
   return mutation;

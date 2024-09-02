@@ -8,12 +8,12 @@ export default function useCabinForm(cabin?: Omit<CabinForm, "image">) {
     price: 0,
     maxCapacity: 0,
     discount: 0,
-    description: "",
+    description: ""
   };
 
   const form = useForm<CabinForm>({
     resolver: zodResolver(cabinFormSchema),
-    defaultValues,
+    defaultValues
   });
 
   return form;

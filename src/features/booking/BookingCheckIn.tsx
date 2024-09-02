@@ -52,20 +52,20 @@ export default function BookingCheckIn({ id }: Props) {
           status: "check-in",
           ...(breakfast
             ? { hasBreakfast: true, extraPrice: breakfastPrice }
-            : {}),
-        },
+            : {})
+        }
       },
       {
         onSuccess: () => {
           toast({ description: "Check in successfully." });
           queryClient.invalidateQueries({
-            queryKey: ["bookings", booking._id],
+            queryKey: ["bookings", booking._id]
           });
           navigate({ pathname: `/bookings/${booking._id}` });
         },
         onError: (err) =>
-          toast({ variant: "destructive", description: err.message }),
-      },
+          toast({ variant: "destructive", description: err.message })
+      }
     );
   }
 
