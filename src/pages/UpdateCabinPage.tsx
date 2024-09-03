@@ -1,10 +1,14 @@
-import { useLocation } from "react-router-dom";
-import UpdateCabinForm from "@/features/cabin/UpdateCabinForm";
+import { useParams } from "react-router-dom";
+import UpdateCabin from "@/features/cabin/UpdateCabin";
 
 export default function UpdateCabinPage() {
-  const { state: cabin } = useLocation();
+  // const { state: cabin } = useLocation();
+  //
+  // if (!cabin) return null;
+  //
+  const params = useParams();
 
-  if (!cabin) return null;
+  if (params.id === undefined) return null;
 
-  return <UpdateCabinForm cabin={cabin} />;
+  return <UpdateCabin id={params.id} />;
 }

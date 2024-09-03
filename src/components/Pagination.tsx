@@ -1,47 +1,55 @@
-import { useEffect, useState } from "react";
+import { PropsWithChildren } from "react";
 import { useSearchParams } from "react-router-dom";
+import { PaginationResponseData } from "@/schemas/pagination";
 import { Button } from "./ui/button";
 
-type Props = {
-  totalPage: number;
-  totalBooking: number;
-};
+/**
+ * @description update search params
+ */
+export default function Pagination({
+  pagination
+}: PropsWithChildren<{
+  pagination: PaginationResponseData;
+}>) {
+  console.log("pagination", pagination);
 
-// JUST FOR TEST
-const LIMIT = 2;
-
-export default function Pagination({ totalPage, totalBooking }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const curPage = Number(searchParams.get("page") || 1);
-
-  const isLastPage = curPage === totalPage;
+  const isFirstPage = pagination.curPage === 1;
+  const isLastPage = pagination.curPage === pagination.totalPages;
 
   function handlePrevPage() {
-    const prevPage = curPage > 1 ? curPage - 1 : curPage;
-    searchParams.set("page", String(prevPage));
+    if (isFirstPage) return;
+    searchParams.set("page", String(pagination.curPage - 1));
     setSearchParams(searchParams);
   }
 
   function handleNextPage() {
-    const nextPage = curPage < totalPage ? curPage + 1 : totalPage;
-    searchParams.set("page", String(nextPage));
+    if (isLastPage) return;
+    searchParams.set("page", String(pagination.curPage + 1));
     setSearchParams(searchParams);
   }
-
-  if (totalPage <= 1) return null;
 
   return (
     <div className="flex items-center justify-between">
       <p>
-        Showing {(curPage - 1) * LIMIT + 1} to{" "}
-        {isLastPage ? totalBooking : curPage * LIMIT} of {totalBooking} results.
+        Showing
+        <span>{(pagination.curPage - 1) * pagination.limit + 1}</span>
+        to
+        <span>
+          {isLastPage
+            ? pagination.totalItems
+            : pagination.curPage * pagination.limit}
+        </span>
+        of
+        <span>{pagination.totalItems}</span>
+        results.
       </p>
       <div>
-        <Button disabled={curPage === 1} onClick={handlePrevPage}>
+        <Button disabled={isFirstPage} onClick={handlePrevPage}>
           Prev
         </Button>
-        <Button disabled={curPage === totalPage} onClick={handleNextPage}>
+        <Button disabled={isLastPage} onClick={handleNextPage}>
           Next
         </Button>
       </div>

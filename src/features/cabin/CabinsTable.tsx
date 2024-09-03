@@ -1,5 +1,6 @@
-import { Copy, EllipsisVertical, FileSliders, Trash2 } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
+import Pagination from "@/components/Pagination";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,64 +25,28 @@ import {
   TableBody,
   TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
-import { CabinApi } from "@/schemas/cabin";
+import { CabinResponse } from "@/schemas/cabin";
 import useCreateCabinMutation from "./useCreateCabinMutation";
-import { useDeleteCabinMutation } from "./useDeleteCabinMutation";
+import { useDeleteCabinByIdMutation } from "./useDeleteCabinByIdMutation";
 import { useGetCabinsQuery } from "./useGetCabinsQuery";
 
+/**
+ * @description handle cabins data (filter, sort)
+ */
 export default function CabinsTable() {
-  const { data: cabins, isLoading } = useGetCabinsQuery();
-
   const [searchParams] = useSearchParams();
 
-  if (isLoading || !cabins) return null;
+  const getCabinsQuery = useGetCabinsQuery(searchParams.toString());
 
-  const discount = searchParams.get("discount");
+  if (getCabinsQuery.isPending) return "Loading...";
 
-  let filteredCabins = cabins;
-
-  if (discount === "only-discount")
-    filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
-
-  if (discount === "no-discount")
-    filteredCabins = cabins.filter((cabin) => cabin.discount === 0);
-
-  const sortBy = searchParams.get("sortBy");
-
-  if (sortBy?.startsWith("price")) {
-    const order = sortBy.split("-").pop();
-
-    filteredCabins.sort((prev, next) => {
-      return order === "desc"
-        ? next.price - prev.price
-        : prev.price - next.price;
-    });
-  }
-
-  if (sortBy?.startsWith("discount")) {
-    const order = sortBy.split("-").pop();
-
-    filteredCabins.sort((prev, next) => {
-      return order === "desc"
-        ? next.discount - prev.discount
-        : prev.discount - next.discount;
-    });
-  }
-
-  if (sortBy?.startsWith("maxCapacity")) {
-    const order = sortBy.split("-").pop();
-
-    filteredCabins.sort((prev, next) =>
-      order === "desc"
-        ? next.maxCapacity - prev.maxCapacity
-        : prev.maxCapacity - next.maxCapacity
-    );
-  }
+  if (getCabinsQuery.isError) return `Error: ${getCabinsQuery.error.message}`;
 
   return (
     <Table>
@@ -97,15 +62,22 @@ export default function CabinsTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filteredCabins.map((cabin) => (
+        {getCabinsQuery.data.cabins.map((cabin) => (
           <CabinsTableRow key={cabin._id} cabin={cabin} />
         ))}
       </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={6}>
+            <Pagination pagination={getCabinsQuery.data.pagination} />
+          </TableCell>
+        </TableRow>
+      </TableFooter>
     </Table>
   );
 }
 
-function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
+function CabinsTableRow({ cabin }: { cabin: CabinResponse }) {
   const { image, name, maxCapacity, price, discount } = cabin;
 
   return (
@@ -124,13 +96,23 @@ function CabinsTableRow({ cabin }: { cabin: CabinApi }) {
   );
 }
 
-function CabinActions({ cabin }: { cabin: CabinApi }) {
+function CabinActions({ cabin }: { cabin: CabinResponse }) {
   const { _id, image, name, maxCapacity, price, discount, description } = cabin;
 
-  const { mutate: createCabinMutate, isPending: isCreateCabinPending } =
-    useCreateCabinMutation();
+  const createCabinmutation = useCreateCabinMutation();
 
-  const { mutate: deleteCabinMutate, isPending } = useDeleteCabinMutation();
+  const deleteCabinByIdMutation = useDeleteCabinByIdMutation();
+
+  function handleDuplicateCabin() {
+    createCabinmutation.mutate({
+      name: `copy of ${name}`,
+      image,
+      maxCapacity,
+      price,
+      discount,
+      description
+    });
+  }
 
   return (
     <>
@@ -143,41 +125,16 @@ function CabinActions({ cabin }: { cabin: CabinApi }) {
             <DropdownMenuLabel>Cabin Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              disabled={isCreateCabinPending}
-              onClick={() => {
-                createCabinMutate({
-                  name: `copy of ${name}`,
-                  image,
-                  maxCapacity,
-                  price,
-                  discount,
-                  description
-                });
-              }}
+              disabled={createCabinmutation.isPending}
+              onClick={handleDuplicateCabin}
             >
-              <div className="flex items-center gap-1">
-                <Copy size={16} />
-                <span>Duplicate</span>
-              </div>
+              Duplicate
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link
-                className="flex items-center gap-1"
-                to={{ pathname: `/cabins/edit/${_id}` }}
-                state={cabin}
-              >
-                <FileSliders size={16} />
-                <span>Edit</span>
-              </Link>
-              {/* </div> */}
+              <Link to={{ pathname: `/cabins/edit/${_id}` }}>Edit</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <AlertDialogTrigger className="w-full">
-                <div className="flex items-center gap-1">
-                  <Trash2 size={16} />
-                  <span>Delete</span>
-                </div>
-              </AlertDialogTrigger>
+              <AlertDialogTrigger className="w-full">Delete</AlertDialogTrigger>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -192,8 +149,8 @@ function CabinActions({ cabin }: { cabin: CabinApi }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              disabled={isPending}
-              onClick={() => deleteCabinMutate(_id)}
+              disabled={deleteCabinByIdMutation.isPending}
+              onClick={() => deleteCabinByIdMutation.mutate(_id)}
             >
               Continue
             </AlertDialogAction>

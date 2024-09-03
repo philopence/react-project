@@ -1,13 +1,14 @@
 import { z } from "zod";
+import { paginationSchema } from "./pagination";
 
-export const bookingSchema = z.object({
+export const bookingResponseSchema = z.object({
   _id: z.string(),
   startDate: z.string().datetime({ offset: true }),
   endDate: z.string().datetime({ offset: true }),
   guestNum: z.number().int(),
   cabinPrice: z.number(),
   extraPrice: z.number(),
-  status: z.enum(["unconfirmed", "check-in", "check-out"]),
+  status: z.enum(["unconfirmed", "checked-in", "checked-out"]),
   note: z.string(),
   hasBreakfast: z.boolean(),
   isPaid: z.boolean(),
@@ -22,13 +23,11 @@ export const bookingSchema = z.object({
   })
 });
 
-export type Booking = z.infer<typeof bookingSchema>;
+export type BookingResponse = z.infer<typeof bookingResponseSchema>;
 
-export const bookingsSchema = z.object({
-  bookings: z.array(bookingSchema),
-  totalBooking: z.number().int(),
-  page: z.number().int().optional(),
-  totalPage: z.number().int().optional()
+export const bookingsResponseSchema = z.object({
+  bookings: z.array(bookingResponseSchema),
+  pagination: paginationSchema
 });
 
-export type Bookings = z.infer<typeof bookingsSchema>;
+export type BookingsResponse = z.infer<typeof bookingsResponseSchema>;

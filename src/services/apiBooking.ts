@@ -1,14 +1,25 @@
-import { ApiError } from "@/lib/ApiError";
+import { ResponseError } from "@/lib/ApiError";
 import {
-  Booking,
-  Bookings,
-  bookingSchema,
-  bookingsSchema
+  BookingResponse,
+  BookingsResponse,
+  bookingResponseSchema,
+  bookingsResponseSchema
 } from "@/schemas/booking";
-import { resErrorSchema } from "@/schemas/error";
+import { errResponseSchema } from "@/schemas/error";
 
-// ?field[gt]=5&page=2&limit=3
-export async function getBookings(query?: string): Promise<Bookings> {
+// ?cabin[eq]=005&page=2&limit=3&sort=-startDate
+export async function getBookings(query?: string): Promise<BookingsResponse> {
+  if (import.meta.env.MODE === "development") {
+    return {
+      bookings: [],
+      pagination: {
+        curPage: 1,
+        limit: 3,
+        totalItems: 8,
+        totalPages: 3
+      }
+    };
+  }
   try {
     const queryString = query ? `?${query}` : "";
 
@@ -16,13 +27,12 @@ export async function getBookings(query?: string): Promise<Bookings> {
       method: "GET"
     });
 
-    if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
+    if (!res.ok)
+      throw new ResponseError(res.status, (await res.json()).message);
 
     const rawData = await res.json();
 
-    const data = bookingsSchema.parse(rawData);
-
-    console.log(data.totalBooking);
+    const data = bookingsResponseSchema.parse(rawData);
 
     return data;
   } catch (err) {
@@ -41,12 +51,12 @@ export async function getBookingById(id: string) {
     });
 
     if (!res.ok) {
-      const data = resErrorSchema.parse(await res.json());
+      const data = errResponseSchema.parse(await res.json());
 
       throw new Error(data.message);
     }
 
-    const data = bookingSchema.parse(await res.json());
+    const data = bookingResponseSchema.parse(await res.json());
 
     return data;
   } catch (err) {
@@ -62,7 +72,7 @@ export async function deleteBookingById(id: string) {
     });
 
     if (!res.ok) {
-      const data = resErrorSchema.parse(await res.json());
+      const data = errResponseSchema.parse(await res.json());
 
       throw new Error(data.message);
     }
@@ -79,7 +89,7 @@ export async function updateBookingById({
   booking
 }: {
   id: string;
-  booking: Partial<Booking>;
+  booking: Partial<BookingResponse>;
 }) {
   try {
     const res = await fetch(`/api/v1/bookings/${id}`, {
@@ -91,7 +101,7 @@ export async function updateBookingById({
     });
 
     if (!res.ok) {
-      const data = resErrorSchema.parse(await res.json());
+      const data = errResponseSchema.parse(await res.json());
 
       throw new Error(data.message);
     }

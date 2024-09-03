@@ -10,7 +10,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import SettingsPage from "@/pages/SettingsPage";
 import UsersPage from "@/pages/UsersPage";
 import BookingPage from "./pages/BookingPage";
-import CheckInPage from "./pages/CheckInPage";
+import CheckPage from "./pages/CheckPage";
 import CreateCabinPage from "./pages/CreateCabinPage";
 import UpdateCabinPage from "./pages/UpdateCabinPage";
 
@@ -39,8 +39,8 @@ const router = createBrowserRouter([
             element: <BookingPage />
           },
           {
-            path: ":id/check-in",
-            element: <CheckInPage />
+            path: ":id/check",
+            element: <CheckPage />
           }
         ]
       },

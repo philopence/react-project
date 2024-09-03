@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import {
-  Form,
   FormField,
   FormItem,
   FormLabel,
@@ -9,21 +9,31 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CabinApi, CabinForm } from "@/schemas/cabin";
+import { CabinResponse, CabinFormValues } from "@/schemas/cabin";
 import useCabinForm from "./useCabinForm";
+import useCreateCabinMutation from "./useCreateCabinMutation";
 import useUpdateCabinMutation from "./useUpdateCabinMutation";
 
-type Props = {
-  cabin: CabinApi;
-};
+export default function CabinForm({
+  defaultValues
+}: {
+  defaultValues?: CabinResponse;
+}) {
+  const form = useCabinForm(defaultValues);
 
-export default function UpdateCabinForm({ cabin }: Props) {
-  const form = useCabinForm(cabin);
+  const updateCabinMutation = useUpdateCabinMutation();
 
-  const { mutate: updateCabinMutate, isPending } = useUpdateCabinMutation();
+  const createCabinMutation = useCreateCabinMutation();
 
-  function onSubmit(values: CabinForm) {
-    updateCabinMutate({ id: cabin._id, cabin: values });
+  function onSubmit(values: CabinFormValues) {
+    if (defaultValues) {
+      updateCabinMutation.mutate({
+        id: defaultValues._id,
+        cabinValues: values
+      });
+    } else {
+      createCabinMutation.mutate(values);
+    }
   }
 
   return (
@@ -116,8 +126,8 @@ export default function UpdateCabinForm({ cabin }: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
-          Create Cabin
+        <Button type="submit" disabled={updateCabinMutation.isPending}>
+          Update Cabin
         </Button>
       </form>
     </Form>

@@ -1,9 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { CabinForm, cabinFormSchema } from "@/schemas/cabin";
+import { CabinFormValues, cabinFormSchema } from "@/schemas/cabin";
 
-export default function useCabinForm(cabin?: Omit<CabinForm, "image">) {
-  const defaultValues = cabin || {
+export default function useCabinForm(
+  cabinValues?: Omit<CabinFormValues, "image">
+) {
+  const defaultValues = cabinValues || {
     name: "",
     price: 0,
     maxCapacity: 0,
@@ -11,7 +13,7 @@ export default function useCabinForm(cabin?: Omit<CabinForm, "image">) {
     description: ""
   };
 
-  const form = useForm<CabinForm>({
+  const form = useForm<CabinFormValues>({
     resolver: zodResolver(cabinFormSchema),
     defaultValues
   });

@@ -8,12 +8,12 @@ const settingSchema = z.object({
   breakfastPrice: z.number()
 });
 
-export const settingApiSchema = settingSchema.extend({
+export const settingResponseSchema = settingSchema.extend({
   _id: z.string()
 });
 
 export const settingFormSchema = settingSchema.partial();
 
-export type SettingApi = z.infer<typeof settingApiSchema>;
+export type SettingResponse = z.infer<typeof settingResponseSchema>;
 
-export type SettingForm = z.infer<typeof settingFormSchema>;
+export type SettingFormValues = z.infer<typeof settingFormSchema>;

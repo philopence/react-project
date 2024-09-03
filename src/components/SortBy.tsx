@@ -22,6 +22,7 @@ export default function SortBy({ field, options: sortBy }: Props) {
     searchParams.set(field, value);
     setSearchParams(searchParams);
   }
+
   return (
     <Select
       onValueChange={handleSortBy}

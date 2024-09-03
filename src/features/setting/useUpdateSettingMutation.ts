@@ -4,19 +4,20 @@ import { updateSettingById } from "@/services/apiSetting";
 
 export default function useUpdateSettingMutation() {
   const queryClient = useQueryClient();
+
   const { toast } = useToast();
-  const mutation = useMutation({
+
+  return useMutation({
     mutationFn: updateSettingById,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["setting"] });
+
       toast({ description: "updated setting successfully!" });
     },
-    onError: () =>
+    onError: (err) =>
       toast({
         variant: "destructive",
-        description: "Failed to Update Setting"
+        description: err.message
       })
   });
-
-  return mutation;
 }
