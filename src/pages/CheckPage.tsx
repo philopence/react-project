@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import BookingCheckIn from "@/features/booking/BookingCheckIn";
 
-export default function CheckInPage() {
+export default function CheckPage() {
   const params = useParams();
 
   if (!params.id) return null;

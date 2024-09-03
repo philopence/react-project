@@ -14,11 +14,6 @@ const navLinks = [
     icon: <LayoutDashboard />
   },
   {
-    label: "Bookings",
-    to: "/bookings",
-    icon: <ScrollText />
-  },
-  {
     label: "Cabins",
     to: "/cabins",
     icon: <House />
@@ -27,6 +22,11 @@ const navLinks = [
     label: "Users",
     to: "/users",
     icon: <Users />
+  },
+  {
+    label: "Bookings",
+    to: "/bookings",
+    icon: <ScrollText />
   },
   {
     label: "Settings",

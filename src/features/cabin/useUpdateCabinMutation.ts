@@ -11,8 +11,8 @@ export default function useUpdateCabinMutation() {
   const mutation = useMutation({
     mutationFn: updateCabinById,
     onSuccess: () => {
-      toast({ description: "Update cabin successfully!" });
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
+      toast({ description: "update cabin successfully!" });
       navigate({ pathname: `/cabins` });
     },
     onError: (err) =>

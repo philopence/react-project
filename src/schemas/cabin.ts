@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { paginationSchema } from "./pagination";
 
 const cabinSchema = z.object({
   name: z.string(),
@@ -17,10 +18,17 @@ export const cabinFormSchema = cabinSchema.extend({
     .optional()
 });
 
-export const cabinApiSchema = cabinSchema.extend({
+export const cabinResponseSchema = cabinSchema.extend({
   _id: z.string(),
-  image: z.string()
+  image: z.string().url()
 });
 
-export type CabinForm = z.infer<typeof cabinFormSchema>;
-export type CabinApi = z.infer<typeof cabinApiSchema>;
+export const cabinsResponseSchema = z.object({
+  cabins: z.array(cabinResponseSchema),
+  pagination: paginationSchema
+});
+
+export type CabinsResponse = z.infer<typeof cabinsResponseSchema>;
+
+export type CabinFormValues = z.infer<typeof cabinFormSchema>;
+export type CabinResponse = z.infer<typeof cabinResponseSchema>;

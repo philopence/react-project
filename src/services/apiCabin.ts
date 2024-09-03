@@ -1,39 +1,93 @@
-import { ApiError } from "@/lib/ApiError";
-import { CabinApi, cabinApiSchema, CabinForm } from "@/schemas/cabin";
+import { ResponseError } from "@/lib/ApiError";
+import { mockCabins } from "@/lib/mockData";
+import { wait } from "@/lib/utils";
+import {
+  CabinResponse,
+  cabinResponseSchema,
+  CabinFormValues,
+  CabinsResponse
+} from "@/schemas/cabin";
 
-export async function getCabins(): Promise<CabinApi[]> {
-  try {
-    const res = await fetch("/api/v1/cabins", {
-      method: "GET"
-    });
-
-    if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
-
-    const data = cabinApiSchema.array().parse(await res.json());
-
-    return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+export async function getCabins(query?: string): Promise<CabinsResponse> {
+  if (import.meta.env.MODE === "development") {
+    console.log("query", query);
+    await wait(1000);
+    return {
+      cabins: mockCabins,
+      pagination: {
+        curPage: 1,
+        limit: 3,
+        totalItems: 8,
+        totalPages: 3
+      }
+    };
   }
+
+  return {
+    cabins: mockCabins,
+    pagination: {
+      curPage: 1,
+      limit: 3,
+      totalItems: 8,
+      totalPages: 3
+    }
+  };
+
+  // try {
+  //   const baseURL = "/api/v1/cabins";
+  //
+  //   const query = new URLSearchParams();
+  //
+  //   if (searchParams?.discount) {
+  //     query.set("discount", searchParams.discount);
+  //   }
+  //
+  //   const fetchInput = `${baseURL}?${query.toString()}`;
+  //   const res = await fetch(fetchInput, { method: "GET" });
+  //
+  //   if (!res.ok) {
+  //     const result = errResponseSchema.safeParse(await res.json());
+  //
+  //     if (!result.success)
+  //       throw new Error("server response verification failed.");
+  //
+  //     throw new ResponseError(res.status, result.data.message);
+  //   }
+  //
+  //   const data = cabinApiSchema.array().parse(await res.json());
+  //
+  //   return data;
+  // } catch (err) {
+  //   console.error(err);
+  //   throw err;
+  // }
 }
 
-export async function createCabin(cabin: CabinForm): Promise<CabinApi> {
-  try {
-    if (!cabin.image) throw new Error("Cabin image is required");
+export async function createCabin(
+  cabinValues: CabinFormValues
+): Promise<CabinResponse> {
+  if (import.meta.env.MODE === "development") {
+    console.log(cabinValues);
+    await wait(1000);
+    return mockCabins[0];
+  }
 
-    if (cabin.image instanceof File) {
+  try {
+    if (!cabinValues.image) throw new Error("Cabin image is required");
+
+    if (cabinValues.image instanceof File) {
       const uploadFormData = new FormData();
 
-      uploadFormData.append("image", cabin.image);
+      uploadFormData.append("image", cabinValues.image);
       const res = await fetch("/api/v1/upload", {
         method: "POST",
         body: uploadFormData
       });
 
-      if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
+      if (!res.ok)
+        throw new ResponseError(res.status, (await res.json()).message);
 
-      cabin.image = (await res.json()).url;
+      cabinValues.image = (await res.json()).url;
     }
 
     const res = await fetch("/api/v1/cabins", {
@@ -41,12 +95,13 @@ export async function createCabin(cabin: CabinForm): Promise<CabinApi> {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(cabin)
+      body: JSON.stringify(cabinValues)
     });
 
-    if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
+    if (!res.ok)
+      throw new ResponseError(res.status, (await res.json()).message);
 
-    const data = cabinApiSchema.parse(await res.json());
+    const data = cabinResponseSchema.parse(await res.json());
 
     return data;
   } catch (err) {
@@ -57,21 +112,26 @@ export async function createCabin(cabin: CabinForm): Promise<CabinApi> {
 
 export async function updateCabinById({
   id,
-  cabin
+  cabinValues
 }: {
   id: string;
-  cabin: Partial<CabinForm>;
-}): Promise<CabinApi> {
+  cabinValues: Partial<CabinFormValues>;
+}): Promise<CabinResponse> {
+  if (import.meta.env.MODE === "development") {
+    console.log("cabinValues", cabinValues);
+    await wait(1000);
+    return mockCabins.find((cabin) => cabin._id === id)!;
+  }
   try {
-    if (cabin.image instanceof File) {
+    if (cabinValues.image instanceof File) {
       const formData = new FormData();
-      formData.append("image", cabin.image);
+      formData.append("image", cabinValues.image);
       const res = await fetch("/api/v1/upload", {
         method: "POST",
         body: formData
       });
       if (!res.ok) throw new Error(res.statusText);
-      cabin.image = (await res.json()).url;
+      cabinValues.image = (await res.json()).url;
     }
 
     const res = await fetch(`/api/cabins/${id}`, {
@@ -79,12 +139,13 @@ export async function updateCabinById({
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(cabin)
+      body: JSON.stringify(cabinValues)
     });
 
-    if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
+    if (!res.ok)
+      throw new ResponseError(res.status, (await res.json()).message);
 
-    const data = cabinApiSchema.parse(await res.json());
+    const data = cabinResponseSchema.parse(await res.json());
 
     return data;
   } catch (err) {
@@ -93,15 +154,22 @@ export async function updateCabinById({
   }
 }
 
-export async function getCabinById(id: string): Promise<CabinApi> {
+export async function getCabinById(id: string): Promise<CabinResponse> {
+  if (import.meta.env.MODE === "development") {
+    console.log("id", id);
+    await wait(1000);
+    return mockCabins.find((cabin) => cabin._id === id)!;
+  }
+
   try {
     const res = await fetch(`/api/cabins/${id}`, {
       method: "GET"
     });
 
-    if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
+    if (!res.ok)
+      throw new ResponseError(res.status, (await res.json()).message);
 
-    const data = cabinApiSchema.parse(await res.json());
+    const data = cabinResponseSchema.parse(await res.json());
 
     return data;
   } catch (err) {
@@ -110,13 +178,26 @@ export async function getCabinById(id: string): Promise<CabinApi> {
   }
 }
 
-export async function deleteCabinById(id: string): Promise<void> {
+export async function deleteCabinById(id: string): Promise<null> {
+  if (import.meta.env.MODE === "development") {
+    console.log("id", id);
+    await wait(1000);
+    const index = mockCabins.findIndex((cabin) => cabin._id === id)!;
+
+    mockCabins.splice(index, 1);
+
+    return null;
+  }
+
   try {
     const res = await fetch(`/api/cabins/${id}`, {
       method: "DELETE"
     });
 
-    if (!res.ok) throw new ApiError(res.status, (await res.json()).message);
+    if (!res.ok)
+      throw new ResponseError(res.status, (await res.json()).message);
+
+    return null;
   } catch (err) {
     console.error(err);
     throw err;

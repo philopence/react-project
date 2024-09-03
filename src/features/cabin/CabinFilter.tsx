@@ -1,20 +1,22 @@
-import Filter from "@/components/Filter";
+import { Button } from "@/components/ui/button";
 
-const filters = [
-  {
-    label: "All",
-    value: "all"
-  },
-  {
-    label: "Only Discount",
-    value: "only-discount"
-  },
-  {
-    label: "No Discount",
-    value: "no-discount"
-  }
-];
+/**
+ * TODO design
+ * ?discount[eq]=0
+ */
 
 export default function CabinFilter() {
-  return <Filter field="discount" filters={filters} />;
+  return (
+    <ul className="flex items-center gap-2">
+      <li>
+        <Button variant={"outline"}>All</Button>
+      </li>
+      <li>
+        <Button variant={"outline"}></Button>
+      </li>
+      <li>
+        <Button variant={"outline"}>All</Button>
+      </li>
+    </ul>
+  );
 }

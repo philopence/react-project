@@ -1,5 +1,5 @@
-import CreateCabinForm from "@/features/cabin/CreateCabinForm";
+import CreateCabin from "@/features/cabin/CreateCabin";
 
 export default function CreateCabinPage() {
-  return <CreateCabinForm />;
+  return <CreateCabin />;
 }

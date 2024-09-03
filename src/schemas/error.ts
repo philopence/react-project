@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const resErrorSchema = z.object({
+export const errResponseSchema = z.object({
   message: z.string()
 });
 
-export type ResError = z.infer<typeof resErrorSchema>;
+export type ResError = z.infer<typeof errResponseSchema>;
