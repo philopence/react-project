@@ -14,16 +14,16 @@ import useSettingForm from "./useSettingForm";
 import useUpdateSettingMutation from "./useUpdateSettingMutation";
 
 export default function SettingForm({
-  setting
+  defaultSetting
 }: PropsWithChildren<{
-  setting: SettingResponse;
+  defaultSetting: SettingResponse;
 }>) {
-  const form = useSettingForm(setting);
+  const form = useSettingForm(defaultSetting);
 
   const updateSettingMutation = useUpdateSettingMutation();
 
   function onSubmit(values: SettingFormValues) {
-    updateSettingMutation.mutate({ id: setting._id, setting: values });
+    updateSettingMutation.mutate({ id: defaultSetting._id, setting: values });
   }
 
   return (
