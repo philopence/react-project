@@ -1,13 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { useUserContext } from "@/contexts/user";
+import { useUserInfoContext } from "@/contexts/userInfo";
 import { login } from "@/services/apiAuth";
 
 export default function useLoginMutation() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const userContext = useUserContext();
+  const userInfoContext = useUserInfoContext();
 
   return useMutation({
     mutationFn: login,
@@ -15,7 +15,7 @@ export default function useLoginMutation() {
       toast({ description: "Login successfully" });
 
       // TODO Context
-      userContext.storageUserInfo(data);
+      userInfoContext.storageUserInfo(data);
 
       navigate({ pathname: "/dashboard" });
     },

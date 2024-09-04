@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 import SideBar from "@/components/SideBar";
 import ThemeToggle from "@/components/ThemeToggle";
-import { useUserContext } from "@/contexts/user";
+import { useUserInfoContext } from "@/contexts/userInfo";
 
 export default function AppLayout() {
-  const userContext = useUserContext();
+  const userInfoContext = useUserInfoContext();
   return (
     <div className="grid min-h-dvh grid-cols-[auto_1fr]">
       <div>
@@ -13,7 +13,7 @@ export default function AppLayout() {
       <div className="grid grid-rows-[auto_1fr]">
         <div>
           header
-          {userContext.userInfo?.name}
+          {userInfoContext.userInfo?.name}
           <ThemeToggle />
         </div>
         <div>

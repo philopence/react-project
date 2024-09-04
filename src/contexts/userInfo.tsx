@@ -50,7 +50,7 @@ export default function UserInfoProvider({
   );
 }
 
-export function useUserContext() {
+export function useUserInfoContext() {
   const context = useContext(UserInfoProviderContext);
 
   if (!context)
