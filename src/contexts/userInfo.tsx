@@ -54,7 +54,9 @@ export function useUserInfoContext() {
   const context = useContext(UserInfoProviderContext);
 
   if (!context)
-    throw new Error("useThemeContext must be used within a ThemeProvider");
+    throw new Error(
+      "useUserInfoContext must be used within a UserInfoProvider"
+    );
 
   return context;
 }
