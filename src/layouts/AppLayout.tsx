@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import SideBar from "@/components/SideBar";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useUserInfoContext } from "@/contexts/userInfo";
+import LogoutButton from "@/features/auth/LogoutButton";
 
 export default function AppLayout() {
   const userInfoContext = useUserInfoContext();
@@ -14,6 +15,7 @@ export default function AppLayout() {
         <div>
           header
           {userInfoContext.userInfo?.name}
+          <LogoutButton />
           <ThemeToggle />
         </div>
         <div>
