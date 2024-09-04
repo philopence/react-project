@@ -12,7 +12,7 @@ export default function useLoginMutation() {
     onSuccess: () => {
       toast({ description: "Login successfully" });
 
-      navigate({ pathname: "/dashboard" });
+      navigate({ pathname: "/dashboard" }, { replace: true });
     },
     onError: (err) =>
       toast({ variant: "destructive", description: err.message })
