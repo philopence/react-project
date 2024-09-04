@@ -12,9 +12,14 @@ import UsersPage from "@/pages/UsersPage";
 import BookingPage from "./pages/BookingPage";
 import CheckPage from "./pages/CheckPage";
 import CreateCabinPage from "./pages/CreateCabinPage";
+import LoginPage from "./pages/LoginPage";
 import UpdateCabinPage from "./pages/UpdateCabinPage";
 
 const router = createBrowserRouter([
+  {
+    path: "login",
+    element: <LoginPage />
+  },
   {
     path: "/",
     element: <AppLayout />,
