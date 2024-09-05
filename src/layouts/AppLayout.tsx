@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import SideBar from "@/components/SideBar";
 import ThemeToggle from "@/components/ThemeToggle";
 import LogoutButton from "@/features/auth/LogoutButton";
