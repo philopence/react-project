@@ -4,6 +4,7 @@ type UserInfo = {
   _id: string;
   name: string;
   email: string;
+  avatar: string | null;
 };
 
 type UserInfoProviderState = {
