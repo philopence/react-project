@@ -12,6 +12,7 @@ export default function AppLayout() {
       <div>
         <SideBar />
       </div>
+
       <div className="grid grid-rows-[auto_1fr]">
         <div>
           header
@@ -19,6 +20,7 @@ export default function AppLayout() {
           <LogoutButton />
           <ThemeToggle />
         </div>
+
         <div>
           <Outlet />
         </div>

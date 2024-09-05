@@ -15,6 +15,7 @@ import LoginPage from "@/pages/LoginPage";
 import SettingsPage from "@/pages/SettingsPage";
 import UpdateCabinPage from "@/pages/UpdateCabinPage";
 import UsersPage from "@/pages/UsersPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
           {
             path: "users",
             element: <UsersPage />
+          },
+          {
+            path: "profile",
+            element: <ProfilePage />
           },
           {
             path: "settings",
