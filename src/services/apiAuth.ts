@@ -45,3 +45,26 @@ export async function login(loginData: { email: string; password: string }) {
 
   return null;
 }
+
+export async function getUserInfo() {
+  const res = await fetch("/api/v1/users/me/profile", {
+    method: "GET"
+  });
+
+  if (!res.ok) throw new Error();
+
+  const rawData = await res.json();
+
+  const result = z
+    .object({
+      _id: z.string(),
+      email: z.string().email(),
+      name: z.string(),
+      image: z.string().url().nullable()
+    })
+    .safeParse(rawData);
+
+  if (!result.success) throw new Error();
+
+  return result.data;
+}
