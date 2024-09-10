@@ -32,18 +32,16 @@ export async function register(userData: {
   return result.data;
 }
 
-export async function login({
-  email,
-  password
-}: {
-  email: string;
-  password: string;
-}) {
-  console.log(email, password);
+export async function login(loginData: { email: string; password: string }) {
+  const res = await fetch("/api/v1/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(loginData)
+  });
 
-  return {
-    _id: String(new Date().getTime()),
-    email,
-    name: "John Doe"
-  };
+  if (!res.ok) throw new Error();
+
+  return null;
 }
