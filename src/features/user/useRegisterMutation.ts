@@ -1,17 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import { RegisterFormValues } from "./useRegisterForm";
+import { useToast } from "@/components/ui/use-toast";
+import { register } from "@/services/apiAuth";
 
 export default function useRegisterMutation() {
+  const { toast } = useToast();
   return useMutation({
-    mutationFn: async (values: RegisterFormValues) => {
-      // email validation
-      return {
-        _id: String(new Date().getTime()),
-        ...values,
-        avatar: null
-      };
+    mutationFn: register,
+    onSuccess: (data) => {
+      console.log(data);
+      toast({ description: "Register successfully" });
     },
-    onSuccess: () => {},
     onError: () => {}
   });
 }

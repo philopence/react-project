@@ -17,9 +17,16 @@ export default function RegisterForm() {
   const registerMutation = useRegisterMutation();
 
   function onSubmit(values: RegisterFormValues) {
-    console.log(values);
-
-    registerMutation.mutate(values);
+    registerMutation.mutate(
+      {
+        email: values.email,
+        password: values.password,
+        name: values.name
+      },
+      {
+        onSettled: () => form.reset()
+      }
+    );
   }
 
   return (

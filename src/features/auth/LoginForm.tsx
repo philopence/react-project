@@ -16,7 +16,6 @@ export default function LoginForm() {
   const loginMutation = useLoginMutation();
 
   function onSubmit(values: LoginFormValues) {
-    console.log(values);
     loginMutation.mutate(values);
   }
 

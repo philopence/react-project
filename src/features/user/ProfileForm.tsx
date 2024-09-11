@@ -22,9 +22,7 @@ export default function ProfileForm({
   const updateProfileMutation = useUpdateProfileMutation();
 
   function onSubmit(values: ProfileFormValues) {
-    console.log(values);
-
-    updateProfileMutation.mutate(values);
+    updateProfileMutation.mutate({ name: values.name });
   }
 
   return (
