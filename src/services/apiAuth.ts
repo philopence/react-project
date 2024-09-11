@@ -68,3 +68,31 @@ export async function getUserInfo() {
 
   return result.data;
 }
+
+export async function updateProfile(data: { name: string }) {
+  const res = await fetch("/api/v1/users/me/profile", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify(data)
+  });
+
+  if (!res.ok) throw new Error();
+
+  const rawData = await res.json();
+
+  const result = z
+    .object({
+      _id: z.string(),
+      email: z.string().email(),
+      name: z.string(),
+      image: z.string().url().nullable()
+    })
+    .safeParse(rawData);
+
+  if (!result.success) throw new Error();
+
+  return result.data;
+}
