@@ -1,4 +1,5 @@
 import { EllipsisVertical } from "lucide-react";
+import { PropsWithChildren } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Pagination from "@/components/Pagination";
 import {
@@ -31,7 +32,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils";
-import { CabinResponse } from "@/schemas/cabin";
+import { CabinResponse } from "@/schemas/response";
 import useCreateCabinMutation from "./useCreateCabinMutation";
 import { useDeleteCabinByIdMutation } from "./useDeleteCabinByIdMutation";
 import { useGetCabinsQuery } from "./useGetCabinsQuery";
@@ -77,18 +78,22 @@ export default function CabinsTable() {
   );
 }
 
-function CabinsTableRow({ cabin }: { cabin: CabinResponse }) {
+function CabinsTableRow({
+  cabin
+}: PropsWithChildren<{
+  cabin: CabinResponse;
+}>) {
   const { image, name, maxCapacity, price, discount } = cabin;
 
   return (
     <TableRow>
       <TableCell>
-        <img className="w-32 aspect-video" src={image} alt={name} />
+        {image && <img className="w-32 aspect-video" src={image} alt={name} />}
       </TableCell>
       <TableCell>{name}</TableCell>
       <TableCell>{maxCapacity}</TableCell>
       <TableCell>{formatCurrency(price)}</TableCell>
-      <TableCell>{`-${discount}%`}</TableCell>
+      <TableCell>{discount ? `-${discount}%` : "-"}</TableCell>
       <TableCell>
         <CabinActions cabin={cabin} />
       </TableCell>
@@ -96,17 +101,22 @@ function CabinsTableRow({ cabin }: { cabin: CabinResponse }) {
   );
 }
 
-function CabinActions({ cabin }: { cabin: CabinResponse }) {
+function CabinActions({
+  cabin
+}: PropsWithChildren<{
+  cabin: CabinResponse;
+}>) {
   const { _id, image, name, maxCapacity, price, discount, description } = cabin;
 
   const createCabinmutation = useCreateCabinMutation();
 
   const deleteCabinByIdMutation = useDeleteCabinByIdMutation();
 
+  // TODO: Unable to duplicate continuously to the same target
   function handleDuplicateCabin() {
     createCabinmutation.mutate({
       name: `copy of ${name}`,
-      image,
+      image: image || undefined,
       maxCapacity,
       price,
       discount,

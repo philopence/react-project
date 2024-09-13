@@ -12,7 +12,7 @@ export default function ProtectedRoutes() {
     if (getUserInfoQuery.isError) {
       toast({
         variant: "destructive",
-        description: getUserInfoQuery.error.message
+        description: "You need to login first"
       });
     }
   }, [getUserInfoQuery.error?.message, getUserInfoQuery.isError, toast]);

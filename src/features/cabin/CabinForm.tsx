@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -9,31 +10,48 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CabinResponse, CabinFormValues } from "@/schemas/cabin";
+import { CabinFormValues } from "@/schemas/form";
+import { CabinResponse } from "@/schemas/response";
 import useCabinForm from "./useCabinForm";
 import useCreateCabinMutation from "./useCreateCabinMutation";
 import useUpdateCabinMutation from "./useUpdateCabinMutation";
 
 export default function CabinForm({
-  defaultValues
-}: {
-  defaultValues?: CabinResponse;
-}) {
+  cabinValues
+}: PropsWithChildren<{
+  cabinValues?: CabinResponse;
+}>) {
+  const defaultValues = cabinValues && {
+    name: cabinValues.name,
+    description: cabinValues.description,
+    price: cabinValues.price,
+    maxCapacity: cabinValues.maxCapacity,
+    discount: cabinValues.discount
+  };
+
   const form = useCabinForm(defaultValues);
 
   const updateCabinMutation = useUpdateCabinMutation();
-
   const createCabinMutation = useCreateCabinMutation();
 
   function onSubmit(values: CabinFormValues) {
-    if (defaultValues) {
+    if (cabinValues) {
+      const modifiedValues = Object.entries(form.formState.dirtyFields).reduce(
+        (acc, [key]) => {
+          acc[key] = values[key as keyof typeof values];
+          return acc;
+        },
+        {} as Record<string, (typeof values)[keyof typeof values]>
+      );
+
       updateCabinMutation.mutate({
-        id: defaultValues._id,
-        cabinValues: values
+        id: cabinValues._id,
+        cabinValues: modifiedValues
       });
-    } else {
-      createCabinMutation.mutate(values);
+      return;
     }
+
+    createCabinMutation.mutate(values);
   }
 
   return (
@@ -46,7 +64,7 @@ export default function CabinForm({
             <FormItem>
               <FormLabel>Cabin name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input required {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,7 +77,7 @@ export default function CabinForm({
             <FormItem>
               <FormLabel>Max capacity</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input required type="number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,7 +90,7 @@ export default function CabinForm({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input required type="number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,7 +116,7 @@ export default function CabinForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea required {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -110,24 +128,30 @@ export default function CabinForm({
           name="image"
           // NOTE don't need value field
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          render={({ field: { value: _, onChange, ...fieldProps } }) => (
+          render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>Cabin Image</FormLabel>
               <FormControl>
                 <Input
                   type="file"
+                  accept="image/*"
                   {...fieldProps}
-                  onChange={(event) =>
-                    onChange(event.target.files && event.target.files[0])
-                  }
+                  onChange={(event) => {
+                    onChange(event.target.files && event.target.files[0]);
+                  }}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={updateCabinMutation.isPending}>
-          Update Cabin
+        <Button
+          type="submit"
+          disabled={
+            createCabinMutation.isPending || updateCabinMutation.isPending
+          }
+        >
+          {`${cabinValues ? "Update" : "Create"} cabin`}
         </Button>
       </form>
     </Form>

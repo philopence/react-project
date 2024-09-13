@@ -4,6 +4,7 @@ import { getUserInfo } from "@/services/apiAuth";
 export default function useGetUserInfoQuery() {
   return useQuery({
     queryKey: ["userInfo"],
-    queryFn: getUserInfo
+    queryFn: getUserInfo,
+    retry: 0
   });
 }

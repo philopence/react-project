@@ -7,7 +7,7 @@ export default function useCheckOutBookingMutation() {
   const { toast } = useToast();
   return useMutation({
     mutationFn: ({ id }: { id: string }) =>
-      updateBookingById({ id: id, booking: { status: "checked-out" } }),
+      updateBookingById({ id: id, bookingData: { status: "checked-out" } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast({ description: "check out successfully" });

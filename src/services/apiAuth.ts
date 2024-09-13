@@ -1,98 +1,129 @@
-import { z } from "zod";
+import { UserResponseSchema } from "@/schemas/response";
 
-export async function register(userData: {
+export async function register({
+  name,
+  email,
+  password,
+  image
+}: {
   name: string;
   email: string;
   password: string;
   image?: string;
 }) {
-  const res = await fetch("/api/v1/auth/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(userData)
-  });
+  try {
+    const res = await fetch("/api/v1/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        image
+      })
+    });
 
-  if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error();
 
-  const rawData = await res.json();
+    const rawData = await res.json();
 
-  const result = z
-    .object({
-      _id: z.string(),
-      email: z.string().email(),
-      name: z.string(),
-      image: z.string().url().nullable()
-    })
-    .safeParse(rawData);
+    const result = UserResponseSchema.safeParse(rawData);
 
-  if (!result.success) throw new Error();
+    if (!result.success) throw result.error;
 
-  return result.data;
+    return result.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
-export async function login(loginData: { email: string; password: string }) {
-  const res = await fetch("/api/v1/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(loginData)
-  });
+export async function login({
+  email,
+  password
+}: {
+  email: string;
+  password: string;
+}) {
+  try {
+    const res = await fetch("/api/v1/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-  if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error();
 
-  return null;
+    return null;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function logout() {
+  try {
+    const res = await fetch("/api/v1/auth/logout", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    if (!res.ok) throw new Error();
+
+    return null;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 export async function getUserInfo() {
-  const res = await fetch("/api/v1/users/me/profile", {
-    method: "GET"
-  });
+  try {
+    const res = await fetch("/api/v1/users/me/profile", {
+      method: "GET"
+    });
 
-  if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error();
 
-  const rawData = await res.json();
+    const rawData = await res.json();
 
-  const result = z
-    .object({
-      _id: z.string(),
-      email: z.string().email(),
-      name: z.string(),
-      image: z.string().url().nullable()
-    })
-    .safeParse(rawData);
+    const result = UserResponseSchema.safeParse(rawData);
 
-  if (!result.success) throw new Error();
+    if (!result.success) throw result.error;
 
-  return result.data;
+    return result.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
-export async function updateProfile(data: { name: string }) {
-  const res = await fetch("/api/v1/users/me/profile", {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    credentials: "include",
-    body: JSON.stringify(data)
-  });
+export async function updateProfile({ name }: { name: string }) {
+  try {
+    const res = await fetch("/api/v1/users/me/profile", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ name })
+    });
 
-  if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error();
 
-  const rawData = await res.json();
+    const rawData = await res.json();
 
-  const result = z
-    .object({
-      _id: z.string(),
-      email: z.string().email(),
-      name: z.string(),
-      image: z.string().url().nullable()
-    })
-    .safeParse(rawData);
+    const result = UserResponseSchema.safeParse(rawData);
 
-  if (!result.success) throw new Error();
+    if (!result.success) throw result.error;
 
-  return result.data;
+    return result.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
