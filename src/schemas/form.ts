@@ -47,8 +47,11 @@ export type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export const profileFormSchema = z.object({
   email: z.string().email(),
-  name: z.string()
-  // avatar: z.string().nullable()
+  name: z.string(),
+  image: z
+    .instanceof(File)
+    .refine((val) => val.type.startsWith("image/"))
+    .optional()
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;

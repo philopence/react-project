@@ -1,6 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import SideBar from "@/components/SideBar";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import LogoutButton from "@/features/auth/LogoutButton";
 import useGetUserInfoQuery from "@/features/auth/useGetUserInfoQuery";
@@ -36,7 +37,12 @@ function Header() {
 
   return (
     <header className="flex items-center justify-end gap-2">
-      {image ? <img src={image} alt={`avatar of ${name}`} /> : null}
+      {image && (
+        <Avatar>
+          <AvatarImage src={image} />
+          <AvatarFallback>{name}</AvatarFallback>
+        </Avatar>
+      )}
       <Button variant={"link"} asChild>
         <Link to={{ pathname: "/profile" }}>{getUserInfoQuery.data.name}</Link>
       </Button>

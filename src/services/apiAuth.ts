@@ -1,3 +1,5 @@
+import configuration from "@/lib/configuration";
+import { ProfileFormValues } from "@/schemas/form";
 import { UserResponseSchema } from "@/schemas/response";
 
 export async function register({
@@ -102,15 +104,55 @@ export async function getUserInfo() {
   }
 }
 
-export async function updateProfile({ name }: { name: string }) {
+export async function updateProfile(
+  profileValues: Omit<ProfileFormValues, "email">
+) {
   try {
+    let imageUrl: string | null = null;
+
+    if (profileValues.image instanceof File) {
+      let res = await fetch("/api/v1/signed-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          image: profileValues.image.name
+        })
+      });
+
+      if (!res.ok) throw new Error();
+
+      let rawData = await res.json();
+
+      const { signedUrl } = rawData;
+
+      const formData = new FormData();
+
+      formData.set("image", profileValues.image);
+      res = await fetch(signedUrl as string, {
+        method: "PUT",
+        body: formData
+      });
+
+      if (!res.ok) throw new Error();
+
+      rawData = await res.json();
+
+      imageUrl = `${configuration.STORAGE_URL}/${rawData.Key}`;
+    }
+
     const res = await fetch("/api/v1/users/me/profile", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
       },
       credentials: "include",
-      body: JSON.stringify({ name })
+      body: JSON.stringify({
+        ...profileValues,
+        ...(imageUrl ? { image: imageUrl } : {})
+      })
     });
 
     if (!res.ok) throw new Error();

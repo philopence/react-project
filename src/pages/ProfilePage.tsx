@@ -13,7 +13,7 @@ export default function ProfilePage() {
     <section>
       <header>ProfilePage</header>
       <main>
-        <ProfileForm defaultValues={getUserInfoQuery.data} />
+        <ProfileForm profileValues={getUserInfoQuery.data} />
       </main>
     </section>
   );
