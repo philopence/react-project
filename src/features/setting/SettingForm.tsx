@@ -9,21 +9,25 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SettingFormValues, SettingResponse } from "@/schemas/setting";
+import { SettingFormValues } from "@/schemas/form";
+import { SettingResponse } from "@/schemas/response";
 import useSettingForm from "./useSettingForm";
 import useUpdateSettingMutation from "./useUpdateSettingMutation";
 
 export default function SettingForm({
-  defaultSetting
+  settingValues
 }: PropsWithChildren<{
-  defaultSetting: SettingResponse;
+  settingValues: SettingResponse;
 }>) {
-  const form = useSettingForm(defaultSetting);
+  const form = useSettingForm(settingValues);
 
   const updateSettingMutation = useUpdateSettingMutation();
 
   function onSubmit(values: SettingFormValues) {
-    updateSettingMutation.mutate({ id: defaultSetting._id, setting: values });
+    updateSettingMutation.mutate({
+      id: settingValues._id,
+      settingData: values
+    });
   }
 
   return (
@@ -77,6 +81,20 @@ export default function SettingForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Max Guests</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="breakfastPrice"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Breakfast Price</FormLabel>
               <FormControl>
                 <Input type="number" {...field} />
               </FormControl>

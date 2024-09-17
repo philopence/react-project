@@ -1,11 +1,23 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { SettingFormValues, settingFormSchema } from "@/schemas/setting";
+import { SettingFormSchema, SettingFormValues } from "@/schemas/form";
 
-export default function useSettingForm(defaultSetting: SettingFormValues) {
+export default function useSettingForm({
+  maxGuests,
+  minGuests,
+  maxNights,
+  minNights,
+  breakfastPrice
+}: SettingFormValues) {
   const form = useForm<SettingFormValues>({
-    resolver: zodResolver(settingFormSchema),
-    defaultValues: defaultSetting
+    resolver: zodResolver(SettingFormSchema),
+    defaultValues: {
+      maxGuests,
+      minGuests,
+      maxNights,
+      minNights,
+      breakfastPrice
+    }
   });
 
   return form;

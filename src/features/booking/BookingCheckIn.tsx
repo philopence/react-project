@@ -1,110 +1,156 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { PropsWithChildren, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency } from "@/lib/utils";
+import { BookingResponse, SettingResponse } from "@/schemas/response";
 import useGetSettingQuery from "../setting/useGetSettingQuery";
 import useGetBookingByIdQuery from "./useGetBookingByIdQuery";
 import useUpdateBookingByIdMutation from "./useUpdateBookingByIdMutation";
+
+// useEffect(() => {
+//   if (getBookingByIdQuery.isPending || getSettingQuery.isPending) return;
+//
+//   if (getBookingByIdQuery.isError || getSettingQuery.isError) return;
+//
+//   setBreakfast(getBookingByIdQuery.data.hasBreakfast);
+//   setConfirmPaid(getBookingByIdQuery.data.isPaid);
+// }, [getBookingByIdQuery, getSettingQuery]);
 
 type Props = {
   id: string;
 };
 export default function BookingCheckIn({ id }: Props) {
-  const [confirmPaid, setConfirmPaid] = useState<undefined | boolean>();
-  const [breakfast, setBreakfast] = useState<undefined | boolean>();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  // const { toast } = useToast();
+  // const queryClient = useQueryClient();
+  // const navigate = useNavigate();
 
-  const { isLoading: isGetBookingByIdLoading, data: booking } =
-    useGetBookingByIdQuery(id);
+  const getBookingByIdQuery = useGetBookingByIdQuery(id);
 
-  const { isLoading: isGetSettingLoading, data: setting } =
-    useGetSettingQuery();
+  const getSettingQuery = useGetSettingQuery();
 
-  const { isPending, mutate: updateBookingByIdMutate } =
-    useUpdateBookingByIdMutation();
+  if (getBookingByIdQuery.isPending || getSettingQuery.isPending)
+    return "Loading...";
 
-  useEffect(() => {
-    setBreakfast(booking?.hasBreakfast);
-    setConfirmPaid(booking?.isPaid);
-  }, [booking]);
+  if (getBookingByIdQuery.isError || getSettingQuery.isError) return "Error";
 
-  if (isGetBookingByIdLoading || isGetSettingLoading) return null;
+  return (
+    <CheckInContet
+      booking={getBookingByIdQuery.data}
+      setting={getSettingQuery.data}
+    />
+  );
+}
 
-  if (!booking || !setting) return null;
+function CheckInContet({
+  booking,
+  setting
+}: PropsWithChildren<{
+  booking: BookingResponse;
+  setting: SettingResponse;
+}>) {
+  const [breakfast, setBreakfast] = useState<boolean>(booking.hasBreakfast);
+  const [confirmPaid, setConfirmPaid] = useState<boolean>(booking.isPaid);
 
-  const breakfastPrice =
-    setting.breakfastPrice *
-    differenceInDays(new Date(booking.endDate), new Date(booking.startDate)) *
-    booking.guestNum;
+  const updateBookingByIdMutation = useUpdateBookingByIdMutation();
+
+  const stayDays = differenceInDays(
+    new Date(booking.endDate),
+    new Date(booking.startDate)
+  );
+
+  const breakfastPrice = breakfast
+    ? setting.breakfastPrice * stayDays * booking.guestNum
+    : 0;
+
+  function handleBreakfast() {
+    setBreakfast((prev) => !prev);
+    setConfirmPaid(false);
+  }
+  function handleConfirmPaid() {
+    setConfirmPaid((prev) => !prev);
+  }
 
   function handleCheckIn() {
-    if (!confirmPaid || !booking || !setting) return;
-    updateBookingByIdMutate(
-      {
-        id: booking._id,
-        booking: {
-          isPaid: true,
-          status: "check-in",
-          ...(breakfast
-            ? { hasBreakfast: true, extraPrice: breakfastPrice }
-            : {})
-        }
-      },
-      {
-        onSuccess: () => {
-          toast({ description: "Check in successfully." });
-          queryClient.invalidateQueries({
-            queryKey: ["bookings", booking._id]
-          });
-          navigate({ pathname: `/bookings/${booking._id}` });
-        },
-        onError: (err) =>
-          toast({ variant: "destructive", description: err.message })
-      }
-    );
+    const bookingData = {
+      isPaid: true,
+      status: "checked-in" as const,
+      ...(breakfast ? { hasBreakfast: true, extraPrice: breakfastPrice } : {})
+    };
+
+    updateBookingByIdMutation.mutate({
+      id: booking._id,
+      bookingData
+    });
   }
 
   return (
     <section>
-      <div>
-        <input
-          id="breakfast"
-          type="checkbox"
-          disabled={breakfast}
-          checked={breakfast}
-          onChange={() => {
-            setBreakfast((prevBreakfast) => !prevBreakfast);
-            setConfirmPaid(false);
-          }}
-        />
-        <label htmlFor="breakfast">
-          has breakfast? {formatCurrency(breakfastPrice)}
-        </label>
-      </div>
-
-      <div>
-        <input
-          id="isPaid"
-          type="checkbox"
-          disabled={confirmPaid}
-          checked={confirmPaid}
-          onChange={() => setConfirmPaid((prevConfirmPaid) => !prevConfirmPaid)}
-        />
-        <label htmlFor="isPaid">
-          is paid?
-          {formatCurrency(booking.cabinPrice + booking.extraPrice)}
-        </label>
-      </div>
+      <CheckBreakfast
+        breakfastPrice={breakfastPrice}
+        breakfast={breakfast}
+        onChange={handleBreakfast}
+      />
+      <CheckIsPaid
+        confirmPaid={confirmPaid}
+        onChange={handleConfirmPaid}
+        totalPrice={booking.cabinPrice + breakfastPrice}
+      />
       <footer>
-        <Button disabled={!confirmPaid || isPending} onClick={handleCheckIn}>
+        <Button disabled={!confirmPaid} onClick={handleCheckIn}>
           Check in Booking
         </Button>
       </footer>
     </section>
+  );
+}
+
+function CheckBreakfast({
+  breakfastPrice,
+  breakfast,
+  onChange
+}: PropsWithChildren<{
+  breakfastPrice: number;
+  breakfast: boolean;
+  onChange: () => void;
+}>) {
+  return (
+    <div>
+      <input
+        id="breakfast"
+        type="checkbox"
+        disabled={breakfast}
+        checked={breakfast}
+        onChange={onChange}
+      />
+      <label htmlFor="breakfast">
+        has breakfast? {formatCurrency(breakfastPrice)}
+      </label>
+    </div>
+  );
+}
+
+function CheckIsPaid({
+  confirmPaid,
+  onChange,
+  totalPrice
+}: PropsWithChildren<{
+  totalPrice: number;
+  confirmPaid: boolean;
+  onChange: () => void;
+}>) {
+  return (
+    <div>
+      <input
+        id="isPaid"
+        type="checkbox"
+        disabled={confirmPaid}
+        checked={confirmPaid}
+        onChange={onChange}
+      />
+      <label htmlFor="isPaid">
+        is paid?
+        {formatCurrency(totalPrice)}
+      </label>
+    </div>
   );
 }

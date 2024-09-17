@@ -8,5 +8,5 @@ export default function UpdateSetting() {
 
   if (getSettingQuery.isError) return `Error: ${getSettingQuery.error.message}`;
 
-  return <SettingForm setting={getSettingQuery.data} />;
+  return <SettingForm settingValues={getSettingQuery.data} />;
 }

@@ -1,64 +1,49 @@
-import { ResponseError } from "@/lib/ApiError";
 import {
   BookingResponse,
-  BookingsResponse,
-  bookingResponseSchema,
-  bookingsResponseSchema
-} from "@/schemas/booking";
-import { errResponseSchema } from "@/schemas/error";
+  BookingResponseSchema,
+  BookingsResponseSchema
+} from "@/schemas/response";
 
-// ?cabin[eq]=005&page=2&limit=3&sort=-startDate
-export async function getBookings(query?: string): Promise<BookingsResponse> {
-  if (import.meta.env.MODE === "development") {
-    return {
-      bookings: [],
-      pagination: {
-        curPage: 1,
-        limit: 3,
-        totalItems: 8,
-        totalPages: 3
-      }
-    };
-  }
+export async function getBookings(query?: string) {
   try {
-    const queryString = query ? `?${query}` : "";
+    let input = "/api/v1/bookings";
 
-    const res = await fetch(`/api/v1/bookings/${queryString}`, {
+    if (query) input += `?${query}`;
+
+    const res = await fetch(input, {
       method: "GET"
     });
 
-    if (!res.ok)
-      throw new ResponseError(res.status, (await res.json()).message);
+    if (!res.ok) throw new Error();
 
     const rawData = await res.json();
 
-    const data = bookingsResponseSchema.parse(rawData);
+    const result = BookingsResponseSchema.safeParse(rawData);
 
-    return data;
+    if (!result.success) throw result.error;
+
+    return result.data;
   } catch (err) {
     console.error(err);
     throw err;
   }
 }
 
-/**
- * GET {{baseURL}}/bookings/66cd68a5f7f7fc968f4c4dcc
- */
 export async function getBookingById(id: string) {
   try {
     const res = await fetch(`/api/v1/bookings/${id}`, {
       method: "GET"
     });
 
-    if (!res.ok) {
-      const data = errResponseSchema.parse(await res.json());
+    if (!res.ok) throw new Error();
 
-      throw new Error(data.message);
-    }
+    const rawData = await res.json();
 
-    const data = bookingResponseSchema.parse(await res.json());
+    const result = BookingResponseSchema.safeParse(rawData);
 
-    return data;
+    if (!result.success) throw result.error;
+
+    return result.data;
   } catch (err) {
     console.error(err);
     throw err;
@@ -71,11 +56,7 @@ export async function deleteBookingById(id: string) {
       method: "DELETE"
     });
 
-    if (!res.ok) {
-      const data = errResponseSchema.parse(await res.json());
-
-      throw new Error(data.message);
-    }
+    if (!res.ok) throw new Error();
 
     return null;
   } catch (err) {
@@ -86,10 +67,12 @@ export async function deleteBookingById(id: string) {
 
 export async function updateBookingById({
   id,
-  booking
+  bookingData
 }: {
   id: string;
-  booking: Partial<BookingResponse>;
+  bookingData: Partial<
+    Pick<BookingResponse, "status" | "hasBreakfast" | "extraPrice" | "isPaid">
+  >;
 }) {
   try {
     const res = await fetch(`/api/v1/bookings/${id}`, {
@@ -97,42 +80,19 @@ export async function updateBookingById({
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(booking)
+      // credentials: "include",
+      body: JSON.stringify(bookingData)
     });
 
-    if (!res.ok) {
-      const data = errResponseSchema.parse(await res.json());
+    if (!res.ok) throw new Error();
 
-      throw new Error(data.message);
-    }
+    const rawData = await res.json();
 
-    // const data = bookingSchema.parse(await res.json());
+    const result = BookingResponseSchema.safeParse(rawData);
 
-    // return data;
-    //
-    const exampleBooking = {
-      _id: "64f8283f0a5b0001",
-      startDate: "2024-09-01T14:30:00+00:00",
-      endDate: "2024-09-05T11:00:00+00:00",
-      guestNum: 2,
-      cabinPrice: 150.0,
-      extraPrice: 50.0,
-      status: "unconfirmed",
-      note: "Allergic to peanuts.",
-      hasBreakfast: true,
-      isPaid: false,
-      guest: {
-        name: "John Doe",
-        email: "johndoe@example.com",
-        nationality: "American",
-        nationalId: "123456789"
-      },
-      cabin: {
-        name: "Maple Lodge"
-      }
-    };
+    if (!result.success) throw result.error;
 
-    return exampleBooking;
+    return result.data;
   } catch (err) {
     console.error(err);
     throw err;

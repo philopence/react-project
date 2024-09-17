@@ -8,7 +8,8 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useRegisterForm, { RegisterFormValues } from "./useRegisterForm";
+import { RegisterFormValues } from "@/schemas/form";
+import useRegisterForm from "./useRegisterForm";
 import useRegisterMutation from "./useRegisterMutation";
 
 export default function RegisterForm() {
@@ -16,12 +17,12 @@ export default function RegisterForm() {
 
   const registerMutation = useRegisterMutation();
 
-  function onSubmit(values: RegisterFormValues) {
+  function onSubmit({ name, email, password }: RegisterFormValues) {
     registerMutation.mutate(
       {
-        email: values.email,
-        password: values.password,
-        name: values.name
+        name,
+        email,
+        password
       },
       {
         onSettled: () => form.reset()

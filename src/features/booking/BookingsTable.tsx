@@ -37,18 +37,13 @@ import {
   TableRow
 } from "@/components/ui/table";
 import useGetBookingsQuery from "@/features/booking/useGetBookingsQuery";
-import { PAGE_SIZE } from "@/lib/configuration";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
-import { BookingResponse } from "@/schemas/booking";
+import { BookingResponse } from "@/schemas/response";
 import useCheckOutBookingMutation from "./useCheckOutBookingMutation";
 import useDeleteBookingByIdMutation from "./useDeleteBookingByIdMutation";
 
 export default function BookingsTable() {
   const [searchParams] = useSearchParams();
-
-  if (searchParams.get("page") === null) searchParams.set("page", String(1));
-
-  searchParams.set("limit", String(PAGE_SIZE));
 
   const getBookingsQuery = useGetBookingsQuery(searchParams.toString());
 
