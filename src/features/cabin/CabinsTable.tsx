@@ -112,7 +112,7 @@ function CabinActions({
 
   const deleteCabinByIdMutation = useDeleteCabinByIdMutation();
 
-  // TODO: Unable to duplicate continuously to the same target
+  // NOTE: Unable to duplicate continuously to the same target
   function handleDuplicateCabin() {
     createCabinmutation.mutate({
       name: `copy of ${name}`,
