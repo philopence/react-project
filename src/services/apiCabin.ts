@@ -110,10 +110,45 @@ export async function updateCabinById({
   cabinValues
 }: {
   id: string;
-  cabinValues: Partial<CabinFormValues>;
+  cabinValues: Partial<
+    Omit<CabinFormValues, "image"> & {
+      image?: File | string | null;
+    }
+  >;
 }) {
   try {
-    // TODO image upload
+    if (cabinValues.image instanceof File) {
+      let res = await fetch("/api/v1/signed-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          image: cabinValues.image.name
+        })
+      });
+
+      if (!res.ok) throw new Error();
+
+      let rawData = await res.json();
+
+      const { signedUrl } = rawData;
+
+      const formData = new FormData();
+
+      formData.set("image", cabinValues.image);
+      res = await fetch(signedUrl as string, {
+        method: "PUT",
+        body: formData
+      });
+
+      if (!res.ok) throw new Error();
+
+      rawData = await res.json();
+
+      cabinValues.image = `${configuration.STORAGE_URL}/${rawData.Key}`;
+    }
 
     const res = await fetch(`/api/v1/cabins/${id}`, {
       method: "PATCH",
