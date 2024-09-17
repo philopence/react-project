@@ -23,3 +23,32 @@ export const SettingFormSchema = z.object({
 });
 
 export type SettingFormValues = z.infer<typeof SettingFormSchema>;
+
+export const registerFormSchema = z
+  .object({
+    name: z.string(),
+    email: z.string().email(),
+    password: z.string(),
+    confirm: z.string()
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "password don't match",
+    path: ["confirm"]
+  });
+
+export type RegisterFormValues = z.infer<typeof registerFormSchema>;
+
+export const loginFormSchema = z.object({
+  email: z.string().email(),
+  password: z.string()
+});
+
+export type LoginFormValues = z.infer<typeof loginFormSchema>;
+
+export const profileFormSchema = z.object({
+  email: z.string().email(),
+  name: z.string()
+  // avatar: z.string().nullable()
+});
+
+export type ProfileFormValues = z.infer<typeof profileFormSchema>;

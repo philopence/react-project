@@ -8,7 +8,8 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useLoginForm, { LoginFormValues } from "./useLoginForm";
+import { LoginFormValues } from "@/schemas/form";
+import useLoginForm from "./useLoginForm";
 import useLoginMutation from "./useLoginMutation";
 
 export default function LoginForm() {
