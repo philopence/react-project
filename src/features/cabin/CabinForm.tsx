@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -29,6 +29,10 @@ export default function CabinForm({
     discount: cabinValues.discount
   };
 
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    () => cabinValues?.image || null
+  );
+
   const form = useCabinForm(defaultValues);
 
   const updateCabinMutation = useUpdateCabinMutation();
@@ -56,7 +60,34 @@ export default function CabinForm({
 
   return (
     <Form {...form}>
+      {imageUrl && <img className="aspect-video w-64" src={imageUrl} />}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* https://github.com/shadcn-ui/ui/issues/443#issuecomment-1563108617 */}
+        <FormField
+          control={form.control}
+          name="image"
+          // NOTE don't need value field
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          render={({ field: { value, onChange, ...fieldProps } }) => (
+            <FormItem>
+              <FormLabel>Cabin Image</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  {...fieldProps}
+                  onChange={(event) => {
+                    if (event.target.files === null) return;
+                    const file = event.target.files[0];
+                    onChange(file);
+                    setImageUrl(URL.createObjectURL(file));
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="name"
@@ -117,29 +148,6 @@ export default function CabinForm({
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea required {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* https://github.com/shadcn-ui/ui/issues/443#issuecomment-1563108617 */}
-        <FormField
-          control={form.control}
-          name="image"
-          // NOTE don't need value field
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          render={({ field: { value, onChange, ...fieldProps } }) => (
-            <FormItem>
-              <FormLabel>Cabin Image</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  {...fieldProps}
-                  onChange={(event) => {
-                    onChange(event.target.files && event.target.files[0]);
-                  }}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

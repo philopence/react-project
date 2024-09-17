@@ -35,7 +35,7 @@ export async function createCabin({
   discount,
   image
 }: Omit<CabinFormValues, "image"> & {
-  image: File | string | undefined | null;
+  image?: File | string | null;
 }) {
   try {
     if (image instanceof File) {
