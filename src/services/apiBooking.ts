@@ -18,6 +18,8 @@ export async function getBookings(query?: string) {
 
     const rawData = await res.json();
 
+    console.log(rawData);
+
     const result = BookingsResponseSchema.safeParse(rawData);
 
     if (!result.success) throw result.error;

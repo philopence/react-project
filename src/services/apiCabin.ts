@@ -4,7 +4,7 @@ import { CabinResponseSchema, CabinsResponseSchema } from "@/schemas/response";
 
 export async function getCabins(query?: string) {
   try {
-    console.log("TODO: validate query");
+    console.log("TODO validate query");
 
     let input = "/api/v1/cabins";
 
