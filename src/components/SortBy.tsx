@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Select,
@@ -7,14 +8,18 @@ import {
   SelectValue
 } from "@/components/ui/select";
 
-type Props = {
+type Props = PropsWithChildren<{
   field: string;
   options: Array<{
     label: string;
     value: string;
   }>;
-};
+}>;
 
+/**
+ * SortBy component is a dropdown menu that allows users to select a sorting option.
+ * The selected value is updated in the URL's query parameters using React Router's useSearchParams hook.
+ */
 export default function SortBy({ field, options: sortBy }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
