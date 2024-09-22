@@ -86,7 +86,8 @@ export async function logout() {
 export async function getUserInfo() {
   try {
     const res = await fetch("/api/v1/users/me/profile", {
-      method: "GET"
+      method: "GET",
+      credentials: "include"
     });
 
     if (!res.ok) throw new Error();
