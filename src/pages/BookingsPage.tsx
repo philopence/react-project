@@ -8,10 +8,6 @@ export default function BookingsPage() {
         <div>Bookings Page Header</div>
 
         <div className="flex items-center gap-2">
-          {/* <div> */}
-          {/*   <BookingFilter /> */}
-          {/* </div> */}
-
           <div>
             <BookingSorter />
           </div>
