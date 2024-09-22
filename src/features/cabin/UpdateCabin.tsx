@@ -8,8 +8,5 @@ export default function UpdateCabin({ id }: { id: string }) {
 
   if (getCabinByIdQuery.isError) return `Error: ${getCabinByIdQuery.error}`;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const { image, ...cabinValues } = getCabinByIdQuery.data;
-
   return <CabinForm cabinValues={getCabinByIdQuery.data} />;
 }
