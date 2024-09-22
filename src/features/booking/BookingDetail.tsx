@@ -13,8 +13,6 @@ export default function BookingDetail({ id }: Props) {
 
   if (isLoading) return null;
 
-  console.log(booking);
-
   if (!booking) return "No Booking";
 
   return (

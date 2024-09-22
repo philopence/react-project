@@ -7,23 +7,11 @@ import useGetSettingQuery from "../setting/useGetSettingQuery";
 import useGetBookingByIdQuery from "./useGetBookingByIdQuery";
 import useUpdateBookingByIdMutation from "./useUpdateBookingByIdMutation";
 
-// useEffect(() => {
-//   if (getBookingByIdQuery.isPending || getSettingQuery.isPending) return;
-//
-//   if (getBookingByIdQuery.isError || getSettingQuery.isError) return;
-//
-//   setBreakfast(getBookingByIdQuery.data.hasBreakfast);
-//   setConfirmPaid(getBookingByIdQuery.data.isPaid);
-// }, [getBookingByIdQuery, getSettingQuery]);
-
-type Props = {
+export default function BookingCheckIn({
+  id
+}: PropsWithChildren<{
   id: string;
-};
-export default function BookingCheckIn({ id }: Props) {
-  // const { toast } = useToast();
-  // const queryClient = useQueryClient();
-  // const navigate = useNavigate();
-
+}>) {
   const getBookingByIdQuery = useGetBookingByIdQuery(id);
 
   const getSettingQuery = useGetSettingQuery();
@@ -34,14 +22,14 @@ export default function BookingCheckIn({ id }: Props) {
   if (getBookingByIdQuery.isError || getSettingQuery.isError) return "Error";
 
   return (
-    <CheckInContet
+    <CheckInContent
       booking={getBookingByIdQuery.data}
       setting={getSettingQuery.data}
     />
   );
 }
 
-function CheckInContet({
+function CheckInContent({
   booking,
   setting
 }: PropsWithChildren<{
@@ -66,6 +54,7 @@ function CheckInContet({
     setBreakfast((prev) => !prev);
     setConfirmPaid(false);
   }
+
   function handleConfirmPaid() {
     setConfirmPaid((prev) => !prev);
   }
@@ -85,11 +74,13 @@ function CheckInContet({
 
   return (
     <section>
-      <CheckBreakfast
-        breakfastPrice={breakfastPrice}
-        breakfast={breakfast}
-        onChange={handleBreakfast}
-      />
+      {!breakfast && (
+        <CheckBreakfast
+          breakfastPrice={breakfastPrice}
+          breakfast={breakfast}
+          onChange={handleBreakfast}
+        />
+      )}
       <CheckIsPaid
         confirmPaid={confirmPaid}
         onChange={handleConfirmPaid}
