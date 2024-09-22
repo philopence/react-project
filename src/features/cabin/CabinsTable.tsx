@@ -31,6 +31,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import configuration from "@/lib/configuration";
 import { formatCurrency } from "@/lib/utils";
 import { CabinResponse } from "@/schemas/response";
 import useCreateCabinMutation from "./useCreateCabinMutation";
@@ -42,6 +43,8 @@ import { useGetCabinsQuery } from "./useGetCabinsQuery";
  */
 export default function CabinsTable() {
   const [searchParams] = useSearchParams();
+
+  searchParams.set("limit", String(configuration.PAGE_SIZE));
 
   const getCabinsQuery = useGetCabinsQuery(searchParams.toString());
 

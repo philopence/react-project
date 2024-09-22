@@ -7,42 +7,34 @@ import { Button } from "./ui/button";
  * @description update page search param & display pagination info
  */
 export default function Pagination({
-  pagination
+  pagination: { page, totalPages, totalItems, limit }
 }: PropsWithChildren<{
   pagination: PaginationResponse;
 }>) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const isFirstPage = pagination.page === 1;
-  const isLastPage = pagination.page === pagination.totalPages;
+  const isFirstPage = page === 1;
+  const isLastPage = page === totalPages;
 
   function handlePrevPage() {
     if (isFirstPage) return;
-    searchParams.set("page", String(pagination.page - 1));
+    searchParams.set("page", String(page - 1));
     setSearchParams(searchParams);
   }
 
   function handleNextPage() {
     if (isLastPage) return;
-    searchParams.set("page", String(pagination.page + 1));
+    searchParams.set("page", String(page + 1));
     setSearchParams(searchParams);
   }
 
   return (
     <div className="flex items-center justify-between">
-      <p>
-        Showing
-        <span>{(pagination.page - 1) * pagination.limit + 1}</span>
-        to
-        <span>
-          {isLastPage
-            ? pagination.totalItems
-            : pagination.page * pagination.limit}
-        </span>
-        of
-        <span>{pagination.totalItems}</span>
-        results.
-      </p>
+      <Info
+        from={(page - 1) * limit + 1}
+        to={isLastPage ? totalItems : page * limit}
+        total={totalItems}
+      />
       <div>
         <Button disabled={isFirstPage} onClick={handlePrevPage}>
           Prev
@@ -52,5 +44,27 @@ export default function Pagination({
         </Button>
       </div>
     </div>
+  );
+}
+
+function Info({
+  from,
+  to,
+  total
+}: PropsWithChildren<{
+  from: number;
+  to: number;
+  total: number;
+}>) {
+  return (
+    <p>
+      Showing
+      <span>{from}</span>
+      to
+      <span>{to}</span>
+      of
+      <span>{total}</span>
+      results.
+    </p>
   );
 }
