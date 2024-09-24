@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import CabinSorter from "@/features/cabin/CabinSorter";
 import CabinsTable from "@/features/cabin/CabinsTable";
 
@@ -8,15 +8,13 @@ export default function CabinsPage() {
     <div>
       <header className="flex items-center justify-between">
         <div>
-          <Button asChild>
-            <Link to={{ pathname: `/cabins/new` }}>Create a Cabin</Link>
-          </Button>
+          <Link className={buttonVariants()} to={{ pathname: `/cabins/new` }}>
+            Create a Cabin
+          </Link>
         </div>
 
         <div className="flex items-center gap-2">
-          <div>
-            <CabinSorter />
-          </div>
+          <CabinSorter />
         </div>
       </header>
 
