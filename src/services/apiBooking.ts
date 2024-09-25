@@ -100,3 +100,20 @@ export async function updateBookingById({
     throw err;
   }
 }
+
+// bookings after created date
+export async function getBookingsAfterDate(field: string, date: string) {
+  const res = await fetch(`/api/v1/bookings?${field}[$gte]=${date}`);
+
+  if (!res.ok) throw new Error();
+
+  const rawData = await res.json();
+
+  console.log(rawData);
+
+  const result = BookingsResponseSchema.safeParse(rawData);
+
+  if (!result.success) throw result.error;
+
+  return result.data;
+}
