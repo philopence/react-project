@@ -1,4 +1,5 @@
 import Filter from "@/components/Filter";
+import DurationChart from "@/features/dashboard/DurationChart";
 import SalesChart from "@/features/dashboard/SalesChart";
 import Statistics from "@/features/dashboard/Statistics";
 
@@ -18,6 +19,12 @@ export default function DashboardPage() {
 
       <main>
         <Statistics />
+        <div className="grid grid-cols-2 h-[200px]">
+          <div>TODO</div>
+          <div>
+            <DurationChart />
+          </div>
+        </div>
         <SalesChart />
       </main>
     </section>
