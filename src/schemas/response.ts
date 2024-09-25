@@ -48,7 +48,9 @@ export const BookingResponseSchema = z.object({
   isPaid: z.boolean(),
   note: z.string().nullable(),
   guest: UserResponseSchema,
-  cabin: CabinResponseSchema
+  cabin: CabinResponseSchema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime()
 });
 
 export const BookingsResponseSchema = z.object({

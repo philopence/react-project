@@ -1,4 +1,5 @@
 import Filter from "@/components/Filter";
+import SalesChart from "@/features/dashboard/SalesChart";
 import Statistics from "@/features/dashboard/Statistics";
 
 export default function DashboardPage() {
@@ -17,6 +18,7 @@ export default function DashboardPage() {
 
       <main>
         <Statistics />
+        <SalesChart />
       </main>
     </section>
   );
