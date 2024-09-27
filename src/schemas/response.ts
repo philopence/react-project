@@ -47,10 +47,12 @@ export const BookingResponseSchema = z.object({
   hasBreakfast: z.boolean(),
   isPaid: z.boolean(),
   note: z.string().nullable(),
-  guest: UserResponseSchema,
-  cabin: CabinResponseSchema,
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime()
+  // TODO remove nullable
+  guest: UserResponseSchema.nullable(),
+  cabin: CabinResponseSchema.nullable(),
+  // TODO remove optional
+  createdAt: z.string().datetime().optional(),
+  updatedAt: z.string().datetime().optional()
 });
 
 export const BookingsResponseSchema = z.object({

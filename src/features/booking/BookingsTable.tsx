@@ -2,7 +2,7 @@ import "date-fns";
 import { formatDistance } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
 import { PropsWithChildren } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link  } from "react-router-dom";
 import Pagination from "@/components/Pagination";
 import {
   AlertDialog,
@@ -37,18 +37,13 @@ import {
   TableRow
 } from "@/components/ui/table";
 import useGetBookingsQuery from "@/features/booking/useGetBookingsQuery";
-import configuration from "@/lib/configuration";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { BookingResponse } from "@/schemas/response";
-import useCheckOutBookingMutation from "./useCheckOutBookingMutation";
+import CheckOutButton from "../check/CheckOutButton";
 import useDeleteBookingByIdMutation from "./useDeleteBookingByIdMutation";
 
 export default function BookingsTable() {
-  const [searchParams] = useSearchParams();
-
-  searchParams.set("limit", String(configuration.PAGE_SIZE));
-
-  const getBookingsQuery = useGetBookingsQuery(searchParams.toString());
+  const getBookingsQuery = useGetBookingsQuery();
 
   if (getBookingsQuery.isPending) return "Loading...";
 
@@ -187,7 +182,6 @@ function BookingActions({
 }>) {
   const deleteBookingByIdMutation = useDeleteBookingByIdMutation();
 
-  const checkOutBookingMutation = useCheckOutBookingMutation();
 
   return (
     <AlertDialog>
@@ -215,13 +209,8 @@ function BookingActions({
           )}
 
           {booking.status === "checked-in" && (
-            <DropdownMenuItem
-              disabled={checkOutBookingMutation.isPending}
-              onClick={() =>
-                checkOutBookingMutation.mutate({ id: booking._id })
-              }
-            >
-              Check out
+            <DropdownMenuItem asChild>
+              <CheckOutButton id={booking._id} />
             </DropdownMenuItem>
           )}
 

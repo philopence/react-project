@@ -1,3 +1,4 @@
+import { endOfToday, startOfToday } from "date-fns";
 import {
   BookingResponse,
   BookingResponseSchema,
@@ -101,7 +102,6 @@ export async function updateBookingById({
   }
 }
 
-// bookings after created date
 export async function getBookingsAfterDate(field: string, date: string) {
   const res = await fetch(`/api/v1/bookings?${field}[$gte]=${date}`);
 
@@ -109,9 +109,25 @@ export async function getBookingsAfterDate(field: string, date: string) {
 
   const rawData = await res.json();
 
-  console.log(rawData);
-
   const result = BookingsResponseSchema.safeParse(rawData);
+
+  if (!result.success) throw result.error;
+
+  return result.data;
+}
+
+export async function getActivityBookings() {
+  const start = startOfToday().toISOString();
+  const end = endOfToday().toISOString();
+
+  const res = await fetch(`/api/v1/bookings/activity`, { method: "GET" });
+
+  if (!res.ok) throw new Error();
+
+  const rawData = await res.json();
+
+  console.log(rawData);
+  const result = BookingsResponseSchema.shape.bookings.safeParse(rawData);
 
   if (!result.success) throw result.error;
 
